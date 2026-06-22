@@ -8,48 +8,37 @@ export default function Contact() {
   const inView = useInView(ref, { once: true, margin: '-80px' });
   const [formStatus, setFormStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setFormStatus('submitting');
 
     const form = e.currentTarget;
     const formData = new FormData(form);
     
-    const accessKey = process.env.NEXT_PUBLIC_WEB3FORMS_KEY || '';
-
-    // If key is missing in development, mock success so the user can test the UI flow
-    if (!accessKey && process.env.NODE_ENV === 'development') {
-      console.warn("Web3Forms Access Key (NEXT_PUBLIC_WEB3FORMS_KEY) is missing. Mocking success response in development mode.");
-      setTimeout(() => {
-        setFormStatus('success');
-        form.reset();
-      }, 1000);
-      return;
-    }
-
-    formData.append('access_key', accessKey);
+    // Add Web3Forms access key provided by user
+    formData.append('access_key', '7287f88d-3d6d-44fd-9ee6-0145f76b5e2f');
     formData.append('subject', `New Project Brief from ${formData.get('name') || 'Portfolio'}`);
     formData.append('from_name', 'Sam Daramroei Portfolio');
 
     // Dynamically construct endpoint to avoid Windows Defender heuristic alerts
     const apiEndpoint = ['https://', 'api.', 'web3forms', '.com/submit'].join('');
 
-    fetch(apiEndpoint, {
-      method: 'POST',
-      body: formData,
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.success) {
-          setFormStatus('success');
-          form.reset();
-        } else {
-          setFormStatus('error');
-        }
-      })
-      .catch(() => {
-        setFormStatus('error');
+    try {
+      const response = await fetch(apiEndpoint, {
+        method: 'POST',
+        body: formData,
       });
+
+      const data = await response.json();
+      if (data.success) {
+        setFormStatus('success');
+        form.reset();
+      } else {
+        setFormStatus('error');
+      }
+    } catch (error) {
+      setFormStatus('error');
+    }
   };
 
   const fade = (delay = 0) => ({
