@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import SmoothScroll from '@/components/SmoothScroll';
 
 export const metadata: Metadata = {
   title: 'Sam Daramroei — Content Creator & Marketing Strategist',
@@ -40,7 +41,9 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body style={{ background: '#242834' }}>{children}</body>
+      <body style={{ background: '#242834' }}>
+        <SmoothScroll>{children}</SmoothScroll>
+      </body>
     </html>
   );
 }
