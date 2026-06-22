@@ -40,6 +40,7 @@ export default function Contact() {
     <section
       id="contact"
       ref={ref}
+      className="section-pad"
       style={{
         background: 'var(--color-surface)',
         padding: '8rem 0',
@@ -47,6 +48,7 @@ export default function Contact() {
       }}
     >
       <div
+        className="grid-2-col"
         style={{
           maxWidth: '1280px',
           margin: '0 auto',
@@ -127,6 +129,7 @@ export default function Contact() {
           >
             {/* Row 1: Name & Company */}
             <div
+              className="grid-2-col"
               style={{
                 display: 'grid',
                 gridTemplateColumns: '1fr 1fr',

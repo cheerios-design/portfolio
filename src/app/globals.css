@@ -145,3 +145,38 @@ a {
 .social-link:hover {
   color: #b6ff00 !important;
 }
+
+/* ─── Mobile Responsiveness (Only affects < 768px) ─────────────── */
+@media (max-width: 768px) {
+  .grid-2-col {
+    grid-template-columns: 1fr !important;
+    gap: 40px !important;
+  }
+  
+  .grid-project {
+    grid-template-columns: 1fr !important;
+    gap: 32px !important;
+  }
+  
+  .section-pad {
+    padding: 4rem 0 !important;
+  }
+  
+  .footer-pad {
+    padding: 3rem 24px !important;
+  }
+  
+  .hide-on-mobile {
+    display: none !important;
+  }
+  
+  .show-on-mobile {
+    display: flex !important;
+  }
+}
+
+@media (min-width: 769px) {
+  .show-on-mobile {
+    display: none !important;
+  }
+}

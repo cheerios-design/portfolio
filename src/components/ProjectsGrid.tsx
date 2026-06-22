@@ -80,6 +80,7 @@ function ProjectRow({
       }}
     >
       <div
+        className="grid-project"
         style={{
           display: 'grid',
           gridTemplateColumns: '160px 1fr 1fr',
@@ -202,6 +203,7 @@ export default function ProjectsGrid() {
   return (
     <section
       id="work"
+      className="section-pad"
       style={{ background: 'var(--color-base)', padding: '8rem 0' }}
     >
       <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 48px' }}>

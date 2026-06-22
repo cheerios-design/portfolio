@@ -10,6 +10,7 @@ export default function Footer() {
   return (
     <footer
       id="contact"
+      className="footer-pad"
       style={{
         background: 'var(--color-surface)',
         borderTop: '1px solid var(--color-border)',

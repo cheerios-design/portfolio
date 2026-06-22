@@ -45,6 +45,7 @@ export default function About() {
     <section
       id="about"
       ref={ref}
+      className="section-pad"
       style={{ background: 'var(--color-surface)', padding: '8rem 0' }}
     >
       <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 48px' }}>
@@ -94,6 +95,7 @@ export default function About() {
 
         {/* ── Two-column bottom ── */}
         <div
+          className="grid-2-col"
           style={{
             display: 'grid',
             gridTemplateColumns: '1fr 1fr',
