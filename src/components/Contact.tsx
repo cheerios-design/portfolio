@@ -124,12 +124,7 @@ export default function Contact() {
           </div>
 
           <form
-<<<<<<< Updated upstream
             onSubmit={(e) => e.preventDefault()}
-=======
-            name="project-brief"
-            onSubmit={handleSubmit}
->>>>>>> Stashed changes
             style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}
           >
             {/* Row 1: Name & Company */}
