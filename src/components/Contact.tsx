@@ -231,7 +231,6 @@ export default function Contact() {
               <div style={{ position: 'relative' }}>
                 <select
                   name="pain-point"
-                  required
                   defaultValue=""
                   style={{
                     ...inputStyle,
