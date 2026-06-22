@@ -152,24 +152,24 @@ a {
     grid-template-columns: 1fr !important;
     gap: 40px !important;
   }
-  
+
   .grid-project {
     grid-template-columns: 1fr !important;
     gap: 32px !important;
   }
-  
+
   .section-pad {
     padding: 4rem 0 !important;
   }
-  
+
   .footer-pad {
     padding: 3rem 24px !important;
   }
-  
+
   .hide-on-mobile {
     display: none !important;
   }
-  
+
   .show-on-mobile {
     display: flex !important;
   }
@@ -179,4 +179,12 @@ a {
   .show-on-mobile {
     display: none !important;
   }
+}
+
+.desktop-nav-link {
+  transition: color 0.2s ease-in-out;
+}
+
+.desktop-nav-link:hover {
+  color: var(--color-primary) !important;
 }

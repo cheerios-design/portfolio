@@ -13,7 +13,7 @@ const NAV_LINKS = [
 ];
 
 export default function Hero() {
-  const [cursor, setCursor] = useState({ x: 0, y: 0, active: false });
+  const [cursor, setCursor] = useState({ x: 0, y: 0, radius: 100, active: false });
   const photoRef = useRef<HTMLDivElement>(null);
   const [isMobile, setIsMobile] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -25,7 +25,7 @@ export default function Hero() {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  // Auto-animate circle on mobile: 3s move, 2s pause
+  // Auto-animate circle on mobile: random zigzag hover with random scaling
   useEffect(() => {
     if (!isMobile) return;
 
@@ -39,24 +39,30 @@ export default function Hero() {
       const centerY = rect.height / 2;
       const radiusX = rect.width * 0.35;
       const radiusY = rect.height * 0.35;
-      
-      const now = Date.now();
-      const elapsed = (now - startTime) % 5000; // 5 second total cycle
 
-      if (elapsed <= 3000) {
-        // Moving phase (3 seconds)
-        const progress = elapsed / 3000;
-        const angle = progress * Math.PI * 2;
-        
-        setCursor({
-          x: centerX + Math.cos(angle) * radiusX,
-          y: centerY + Math.sin(angle) * radiusY,
-          active: true,
-        });
-      } else {
-        // Paused phase (2 seconds)
-        // Keep active true so it stays visible where it paused
-      }
+      const time = (Date.now() - startTime) / 1000;
+
+      // Random zigzag hover coordinates using multiple frequencies
+      const dx = Math.sin(time * 0.75) * 0.5 +
+        Math.cos(time * 1.85) * 0.35 +
+        Math.sin(time * 4.3) * 0.15;
+
+      const dy = Math.cos(time * 0.65) * 0.5 +
+        Math.sin(time * 2.15) * 0.35 +
+        Math.cos(time * 3.8) * 0.15;
+
+      // Scale varying continuously between 65px and 135px
+      const radiusScale = 1.0 +
+        Math.sin(time * 1.2) * 0.25 +
+        Math.cos(time * 2.9) * 0.1;
+      const animatedRadius = 100 * radiusScale;
+
+      setCursor({
+        x: centerX + dx * radiusX,
+        y: centerY + dy * radiusY,
+        radius: animatedRadius,
+        active: true,
+      });
 
       animationFrame = requestAnimationFrame(animateCircle);
     };
@@ -72,6 +78,7 @@ export default function Hero() {
     setCursor({
       x: e.clientX - rect.left,
       y: e.clientY - rect.top,
+      radius: 150,
       active: true,
     });
   };
@@ -129,7 +136,7 @@ export default function Hero() {
           <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: 'var(--color-primary)' }} />
           <span style={{
             fontFamily: 'var(--font-accent)', fontSize: '0.8rem',
-            color: isMenuOpen ? 'black' : 'white', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em',
+            color: isMenuOpen ? 'black' : (isMobile ? 'var(--color-base)' : 'white'), fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em',
             transition: 'color 0.3s ease'
           }}>
             Sam Daramroei
@@ -137,13 +144,14 @@ export default function Hero() {
         </div>
 
         {/* Desktop Links */}
-        <div className="hide-on-mobile" style={{ gap: '36px' }}>
+        <div className="hide-on-mobile" style={{ display: 'flex', gap: '65px' }}>
           {NAV_LINKS.map(({ label, href }) => (
             <a
               key={label}
               href={href}
+              className="desktop-nav-link"
               style={{
-                fontFamily: 'var(--font-accent)', fontSize: '0.68rem',
+                fontFamily: 'var(--font-accent)', fontSize: '1rem',
                 letterSpacing: '0.14em', textTransform: 'uppercase',
                 color: 'rgba(255,255,255,0.6)',
               }}
@@ -158,7 +166,7 @@ export default function Hero() {
           className="show-on-mobile"
           onClick={() => setIsMenuOpen(!isMenuOpen)}
           style={{
-            background: 'none', border: 'none', color: isMenuOpen ? 'black' : 'white', cursor: 'pointer',
+            background: 'none', border: 'none', color: isMenuOpen ? 'black' : (isMobile ? 'var(--color-base)' : 'white'), cursor: 'pointer',
             padding: '8px', zIndex: 60, display: 'flex', flexDirection: 'column', gap: '4px',
           }}
           aria-label="Toggle Menu"
@@ -228,7 +236,7 @@ export default function Hero() {
         style={{
           position: 'absolute',
           bottom: 0,
-          left: '50%',
+          left: isMobile ? '12%' : '32%',
           transform: 'translateX(-50%)',
           width: 'clamp(300px, 80%, 600px)',
           height: isMobile ? '70%' : '85%',
@@ -254,7 +262,7 @@ export default function Hero() {
           style={{
             objectFit: 'cover',
             objectPosition: 'bottom center',
-            clipPath: `circle(${isMobile ? '100px' : '150px'} at ${cursor.x}px ${cursor.y}px)`,
+            clipPath: `circle(${isMobile ? (cursor.radius || 100) : 150}px at ${cursor.x}px ${cursor.y}px)`,
             opacity: cursor.active ? 1 : 0,
             transition: isMobile ? 'none' : 'opacity 0.25s ease',
           }}
@@ -289,7 +297,7 @@ export default function Hero() {
           fontWeight: 'bolder',
           fontSize: 'clamp(1.6rem, 4vw, 2.4rem)',
           lineHeight: 1.15,
-          color: 'white',
+          color: isMobile ? 'var(--color-base)' : 'white',
           letterSpacing: '-0.02em',
         }}>
           Content Systems &amp; Marketing <span style={{ color: 'var(--color-primary)' }}>Architecture</span>
@@ -358,7 +366,7 @@ export default function Hero() {
         }}
       >
         <h1 style={{
-          fontSize: 'clamp(3.5rem, 15vw, 15rem)',
+          fontSize: 'clamp(2rem, 10vw, 12rem)',
           fontFamily: 'var(--font-heading)',
           color: 'var(--color-accent)',
           margin: 0,

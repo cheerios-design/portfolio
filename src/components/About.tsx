@@ -116,6 +116,8 @@ export default function About() {
               paddingLeft: '24px',
               margin: 0,
               textTransform: 'uppercase',
+              width: '100%',
+              maxWidth: '450px'
             }}
           >
             I operate at the intersection of technical infrastructure and narrative strategy.
