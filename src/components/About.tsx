@@ -115,7 +115,7 @@ export default function About() {
               borderLeft: '2px solid var(--color-primary)',
               paddingLeft: '24px',
               margin: 0,
-              textTransform: 'uppercase',
+              textTransform: 'none',
               width: '100%',
               maxWidth: '450px'
             }}
