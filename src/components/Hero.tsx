@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useRef } from 'react';
-import { motion } from 'framer-motion';
+import { useState, useRef, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import profileOrigin from '../../public/SamProfile_origin.png';
 import profileInverted from '../../public/SamProfile_inverted.png';
@@ -13,22 +13,82 @@ const NAV_LINKS = [
 ];
 
 export default function Hero() {
-  const [cursor, setCursor] = useState({ x: 0, y: 0, active: false });
+  const [cursor, setCursor] = useState({ x: 0, y: 0, radius: 100, active: false });
   const photoRef = useRef<HTMLDivElement>(null);
+  const [isMobile, setIsMobile] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile(); // Check immediately
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // Auto-animate circle on mobile: random zigzag hover with random scaling
+  useEffect(() => {
+    if (!isMobile) return;
+
+    let startTime = Date.now();
+    let animationFrame: number;
+
+    const animateCircle = () => {
+      if (!photoRef.current) return;
+      const rect = photoRef.current.getBoundingClientRect();
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+      const radiusX = rect.width * 0.35;
+      const radiusY = rect.height * 0.35;
+
+      const time = (Date.now() - startTime) / 1000;
+
+      // Random zigzag hover coordinates using multiple frequencies
+      const dx = Math.sin(time * 0.75) * 0.5 +
+        Math.cos(time * 1.85) * 0.35 +
+        Math.sin(time * 4.3) * 0.15;
+
+      const dy = Math.cos(time * 0.65) * 0.5 +
+        Math.sin(time * 2.15) * 0.35 +
+        Math.cos(time * 3.8) * 0.15;
+
+      // Scale varying continuously between 65px and 135px
+      const radiusScale = 1.0 +
+        Math.sin(time * 1.2) * 0.25 +
+        Math.cos(time * 2.9) * 0.1;
+      const animatedRadius = 100 * radiusScale;
+
+      setCursor({
+        x: centerX + dx * radiusX,
+        y: centerY + dy * radiusY,
+        radius: animatedRadius,
+        active: true,
+      });
+
+      animationFrame = requestAnimationFrame(animateCircle);
+    };
+
+    animationFrame = requestAnimationFrame(animateCircle);
+
+    return () => cancelAnimationFrame(animationFrame);
+  }, [isMobile]);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!photoRef.current) return;
+    if (isMobile || !photoRef.current) return;
     const rect = photoRef.current.getBoundingClientRect();
     setCursor({
       x: e.clientX - rect.left,
       y: e.clientY - rect.top,
+      radius: 150,
       active: true,
     });
   };
 
   const handleMouseLeave = () => {
+    if (isMobile) return;
     setCursor((prev) => ({ ...prev, active: false }));
   };
+
+  const closeMenu = () => setIsMenuOpen(false);
 
   return (
     <section
@@ -50,9 +110,9 @@ export default function Hero() {
         style={{
           position: 'absolute',
           top: 0,
-          left: '49.5%',
+          left: '50%',
           transform: 'translateX(-50%)',
-          width: '545px',
+          width: 'clamp(320px, 100%, 545px)',
           height: '100%',
           backgroundColor: '#f8f0e4',
           zIndex: -1,
@@ -68,7 +128,7 @@ export default function Hero() {
         style={{
           position: 'absolute', top: 0, left: 0, right: 0,
           display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-          padding: '32px 48px', zIndex: 40,
+          padding: 'clamp(20px, 4vw, 32px) clamp(24px, 5vw, 48px)', zIndex: 50,
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
@@ -76,19 +136,22 @@ export default function Hero() {
           <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: 'var(--color-primary)' }} />
           <span style={{
             fontFamily: 'var(--font-accent)', fontSize: '0.8rem',
-            color: 'white', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em'
+            color: isMenuOpen ? 'black' : (isMobile ? 'var(--color-base)' : 'white'), fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em',
+            transition: 'color 0.3s ease'
           }}>
             Sam Daramroei
           </span>
         </div>
 
-        <div style={{ display: 'flex', gap: '36px' }}>
+        {/* Desktop Links */}
+        <div className="hide-on-mobile" style={{ display: 'flex', gap: '65px' }}>
           {NAV_LINKS.map(({ label, href }) => (
             <a
               key={label}
               href={href}
+              className="desktop-nav-link"
               style={{
-                fontFamily: 'var(--font-accent)', fontSize: '0.68rem',
+                fontFamily: 'var(--font-accent)', fontSize: '1rem',
                 letterSpacing: '0.14em', textTransform: 'uppercase',
                 color: 'rgba(255,255,255,0.6)',
               }}
@@ -97,7 +160,69 @@ export default function Hero() {
             </a>
           ))}
         </div>
+
+        {/* Mobile Hamburger */}
+        <button
+          className="show-on-mobile"
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+          style={{
+            background: 'none', border: 'none', color: isMenuOpen ? 'black' : (isMobile ? 'var(--color-base)' : 'white'), cursor: 'pointer',
+            padding: '8px', zIndex: 60, display: 'flex', flexDirection: 'column', gap: '4px',
+          }}
+          aria-label="Toggle Menu"
+        >
+          <motion.div
+            animate={{ rotate: isMenuOpen ? 45 : 0, y: isMenuOpen ? 6 : 0 }}
+            style={{ width: '24px', height: '2px', background: 'currentColor', originX: 0.5 }}
+          />
+          <motion.div
+            animate={{ opacity: isMenuOpen ? 0 : 1 }}
+            style={{ width: '24px', height: '2px', background: 'currentColor' }}
+          />
+          <motion.div
+            animate={{ rotate: isMenuOpen ? -45 : 0, y: isMenuOpen ? -6 : 0 }}
+            style={{ width: '24px', height: '2px', background: 'currentColor', originX: 0.5 }}
+          />
+        </button>
       </motion.nav>
+
+      {/* ── FULLSCREEN MOBILE OVERLAY MENU ── */}
+      <AnimatePresence>
+        {isMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: '-100%' }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: '-100%' }}
+            transition={{ duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
+            style={{
+              position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+              background: 'var(--color-accent)', zIndex: 45,
+              display: 'flex', flexDirection: 'column',
+              justifyContent: 'center', alignItems: 'center', gap: '48px',
+            }}
+          >
+            {NAV_LINKS.map(({ label, href }, i) => (
+              <motion.a
+                key={label}
+                href={href}
+                onClick={closeMenu}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 + i * 0.1, duration: 0.4 }}
+                style={{
+                  fontFamily: 'var(--font-heading)',
+                  fontSize: 'clamp(2rem, 8vw, 4rem)',
+                  color: 'black',
+                  textTransform: 'uppercase',
+                  textDecoration: 'none',
+                }}
+              >
+                {label}
+              </motion.a>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* ── PHOTO (CENTERED) ── */}
       <motion.div
@@ -107,32 +232,27 @@ export default function Hero() {
         transition={{ duration: 0.9, delay: 0.1, ease: [0.25, 0.46, 0.45, 0.94] }}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
-        onMouseEnter={() => setCursor((prev) => ({ ...prev, active: true }))}
+        onMouseEnter={() => !isMobile && setCursor((prev) => ({ ...prev, active: true }))}
         style={{
           position: 'absolute',
           bottom: 0,
-          left: '30%',
+          left: isMobile ? '12%' : '32%',
           transform: 'translateX(-50%)',
-          width: 'min(50%, 600px)',
-          height: '85%',
-          cursor: 'crosshair',
+          width: 'clamp(300px, 80%, 600px)',
+          height: isMobile ? '70%' : '85%',
+          cursor: isMobile ? 'default' : 'crosshair',
           zIndex: 10,
         }}
       >
-        {/* Normal image */}
         <Image
           src={profileOrigin}
           alt="Sam Daramroei"
           fill
           priority
           sizes="(max-width: 768px) 90vw, 50vw"
-          style={{
-            objectFit: 'cover',
-            objectPosition: 'bottom center',
-          }}
+          style={{ objectFit: 'cover', objectPosition: 'bottom center' }}
         />
 
-        {/* Inverted image — swaps in on hover via clip-path */}
         <Image
           src={profileInverted}
           alt="Sam Daramroei (inverted)"
@@ -142,18 +262,16 @@ export default function Hero() {
           style={{
             objectFit: 'cover',
             objectPosition: 'bottom center',
-            clipPath: `circle(150px at ${cursor.x}px ${cursor.y}px)`,
+            clipPath: `circle(${isMobile ? (cursor.radius || 100) : 150}px at ${cursor.x}px ${cursor.y}px)`,
             opacity: cursor.active ? 1 : 0,
-            transition: 'opacity 0.25s ease',
+            transition: isMobile ? 'none' : 'opacity 0.25s ease',
           }}
         />
 
-        {/* Bottom Fade Gradient to blend bottom edge into background */}
         <div
           style={{
             position: 'absolute',
-            bottom: 0, left: 0, right: 0,
-            height: '15%',
+            bottom: 0, left: 0, right: 0, height: '15%',
             background: 'linear-gradient(to top, var(--color-base) 0%, transparent 100%)',
             pointerEvents: 'none',
           }}
@@ -167,24 +285,22 @@ export default function Hero() {
         transition={{ duration: 0.7, delay: 0.3 }}
         style={{
           position: 'absolute',
-          left: '48px',
+          left: isMobile ? '24px' : '48px',
+          top: isMobile ? '15%' : 'auto',
           zIndex: 20,
           maxWidth: '340px',
           pointerEvents: 'none',
         }}
       >
-
-
         <h2 style={{
           fontFamily: 'var(--font-body)',
           fontWeight: 'bolder',
-          fontSize: '2.4rem',
+          fontSize: 'clamp(1.6rem, 4vw, 2.4rem)',
           lineHeight: 1.15,
-          color: 'white',
+          color: isMobile ? 'var(--color-base)' : 'white',
           letterSpacing: '-0.02em',
-
         }}>
-          Content Systems &amp; Marketing <span style={{ color: 'var(--color-primary)', }}>Architecture</span>
+          Content Systems &amp; Marketing <span style={{ color: 'var(--color-primary)' }}>Architecture</span>
         </h2>
       </motion.div>
 
@@ -193,18 +309,18 @@ export default function Hero() {
         initial={{ opacity: 0, x: 30 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.7, delay: 0.4 }}
+        className="hide-on-mobile"
         style={{
           position: 'absolute',
           right: '48px',
           zIndex: 20,
           maxWidth: '280px',
+          flexDirection: 'column',
         }}
       >
         <p style={{
-          fontFamily: 'var(--font-body)',
-          fontSize: '0.9rem',
-          color: 'rgba(255,255,255,0.6)',
-          lineHeight: 1.6,
+          fontFamily: 'var(--font-body)', fontSize: '0.9rem',
+          color: 'rgba(255,255,255,0.6)', lineHeight: 1.6,
           marginBottom: '32px',
         }}>
           Hi, I&apos;m Sam Daramroei—building digital systems and narrative strategies that convert attention into measurable impact.
@@ -219,6 +335,7 @@ export default function Hero() {
             fontFamily: 'var(--font-accent)', fontSize: '0.75rem',
             fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em',
             transition: 'transform 0.2s ease',
+            width: 'fit-content',
           }}
           onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.02)')}
           onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
@@ -249,7 +366,7 @@ export default function Hero() {
         }}
       >
         <h1 style={{
-          fontSize: 'clamp(3rem, 10vw, 15rem)',
+          fontSize: 'clamp(2rem, 10vw, 12rem)',
           fontFamily: 'var(--font-heading)',
           color: 'var(--color-accent)',
           margin: 0,
