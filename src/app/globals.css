@@ -1,31 +1,28 @@
+/* ─── Adobe Fonts (Dazzle Unicase) — MUST BE FIRST ─────────────── */
+@import url('https://use.typekit.net/mim0jxc.css');
+
+/* ─── Google Fonts ────────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
 @import "tailwindcss";
 
-/* ─── Google Fonts ─────────────────────────────────────────────── */
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Google+Sans+Flex:wght@100..900&display=swap');
-
-/* Dazzle Unicase is not on Google Fonts; fall back to a premium serif */
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap');
-
-/* ─── CSS Custom Properties ─────────────────────────────────────── */
+/* ─── Design Tokens ───────────────────────────────────────────────── */
 :root {
   --color-base: #242834;
   --color-primary: #7d53ef;
   --color-accent: #b6ff00;
-  --color-surface: #2e3347;
-  --color-border: rgba(125, 83, 239, 0.2);
-  --color-text-muted: rgba(255, 255, 255, 0.55);
+  --color-surface: #1c2030;
+  --color-border: rgba(255, 255, 255, 0.07);
 
-  --font-heading: 'Cormorant Garamond', 'Georgia', serif;
-  --font-body: 'Montserrat', 'Google Sans Flex', system-ui, sans-serif;
+  --font-heading: 'dazzle-unicase', Georgia, serif;
+  --font-body: 'Google Sans', system-ui, sans-serif;
   --font-accent: 'Montserrat', system-ui, sans-serif;
-
-  --gradient-saas: linear-gradient(135deg, #242834 0%, #3a2b5e 100%);
-  --gradient-category: linear-gradient(180deg, rgba(125, 83, 239, 0.12) 0%, rgba(36, 40, 52, 0) 100%);
-  --gradient-glow: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(125, 83, 239, 0.25) 0%, transparent 70%);
 }
 
-/* ─── Base Styles ───────────────────────────────────────────────── */
-*, *::before, *::after {
+/* ─── Reset ───────────────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
@@ -34,8 +31,8 @@ html {
 }
 
 body {
-  background-color: var(--color-base);
-  color: #e8eaf6;
+  background: var(--color-base);
+  color: #ffffff;
   font-family: var(--font-body);
   font-size: 16px;
   line-height: 1.65;
@@ -44,47 +41,85 @@ body {
   overflow-x: hidden;
 }
 
-/* ─── Typography ────────────────────────────────────────────────── */
-h1, h2, h3, h4, h5, h6 {
+/* ─── Typography — all headings uppercase ─────────────────────────── */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-family: var(--font-heading);
-  line-height: 1.15;
+  text-transform: uppercase;
+  font-weight: 700;
+  line-height: 1.05;
   letter-spacing: -0.02em;
-  font-weight: 600;
+  margin: 0;
 }
 
-/* ─── Scrollbar ─────────────────────────────────────────────────── */
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: var(--color-base); }
-::-webkit-scrollbar-thumb { background: var(--color-primary); border-radius: 3px; }
-
-/* ─── Utility: gradient text ────────────────────────────────────── */
-.text-gradient {
-  background: linear-gradient(90deg, #7d53ef 0%, #b6ff00 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+a {
+  text-decoration: none;
+  transition: color 0.2s;
 }
 
-/* ─── Utility: glass card ───────────────────────────────────────── */
-.glass {
-  background: rgba(46, 51, 71, 0.55);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid var(--color-border);
+/* ─── Scrollbar ───────────────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 4px;
 }
 
-/* ─── Utility: section padding ─────────────────────────────────── */
-.section-pad {
-  padding-top: 7rem;
-  padding-bottom: 7rem;
+::-webkit-scrollbar-track {
+  background: var(--color-base);
 }
 
-/* ─── Noise texture overlay ─────────────────────────────────────── */
-.noise::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
-  pointer-events: none;
-  z-index: 1;
+::-webkit-scrollbar-thumb {
+  background: var(--color-primary);
+}
+
+/* ─── Utility: Section label (// prefix) ─────────────────────────── */
+.section-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 3rem;
+}
+
+.section-label::before {
+  content: '//';
+  color: var(--color-accent);
+  font-family: var(--font-accent);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.section-label span {
+  color: rgba(255, 255, 255, 0.35);
+  font-family: var(--font-accent);
+  font-size: 0.65rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+/* ─── Utility: divider line ───────────────────────────────────────── */
+.row-divider {
+  border: none;
+  border-top: 1px solid var(--color-border);
+}
+
+/* ─── Project Title Link ────────────────────────────────────────── */
+.project-title-link {
+  color: white;
+  transition: color 0.2s ease-in-out;
+}
+
+.project-title-link:hover {
+  color: #7d53ef;
+}
+
+
+/* ─── Social Links ──────────────────────────────────────────────── */
+.social-link {
+  transition: color 0.2s ease-in-out;
+}
+
+.social-link:hover {
+  color: #b6ff00 !important;
 }
