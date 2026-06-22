@@ -1,11 +1,37 @@
 'use client';
 
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { motion, useInView } from 'framer-motion';
 
 export default function Contact() {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: '-80px' });
+  const [formStatus, setFormStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setFormStatus('submitting');
+
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+
+    fetch('/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams(formData as any).toString(),
+    })
+      .then((res) => {
+        if (res.ok) {
+          setFormStatus('success');
+          form.reset();
+        } else {
+          setFormStatus('error');
+        }
+      })
+      .catch(() => {
+        setFormStatus('error');
+      });
+  };
 
   const fade = (delay = 0) => ({
     initial: { opacity: 0, y: 28 },
@@ -124,9 +150,14 @@ export default function Contact() {
           </div>
 
           <form
-            onSubmit={(e) => e.preventDefault()}
+            name="project-brief"
+            method="POST"
+            data-netlify="true"
+            onSubmit={handleSubmit}
             style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}
           >
+            <input type="hidden" name="form-name" value="project-brief" />
+
             {/* Row 1: Name & Company */}
             <div
               className="grid-2-col"
@@ -140,6 +171,8 @@ export default function Contact() {
                 <label style={labelStyle}>Name</label>
                 <input
                   type="text"
+                  name="name"
+                  required
                   placeholder="Your name"
                   style={inputStyle}
                   onFocus={(e) => (e.target.style.borderColor = 'var(--color-primary)')}
@@ -150,6 +183,7 @@ export default function Contact() {
                 <label style={labelStyle}>Company</label>
                 <input
                   type="text"
+                  name="company"
                   placeholder="Your company"
                   style={inputStyle}
                   onFocus={(e) => (e.target.style.borderColor = 'var(--color-primary)')}
@@ -163,6 +197,8 @@ export default function Contact() {
               <label style={labelStyle}>Email</label>
               <input
                 type="email"
+                name="email"
+                required
                 placeholder="your@email.com"
                 style={inputStyle}
                 onFocus={(e) => (e.target.style.borderColor = 'var(--color-primary)')}
@@ -175,6 +211,9 @@ export default function Contact() {
               <label style={labelStyle}>Biggest Pain Point</label>
               <div style={{ position: 'relative' }}>
                 <select
+                  name="pain-point"
+                  required
+                  defaultValue=""
                   style={{
                     ...inputStyle,
                     appearance: 'none',
@@ -183,7 +222,7 @@ export default function Contact() {
                   onFocus={(e) => (e.target.style.borderColor = 'var(--color-primary)')}
                   onBlur={(e) => (e.target.style.borderColor = 'var(--color-border)')}
                 >
-                  <option value="" disabled selected hidden>
+                  <option value="" disabled hidden>
                     Select one...
                   </option>
                   <option value="strategy" style={{ color: 'black' }}>Brand Strategy</option>
@@ -224,6 +263,8 @@ export default function Contact() {
               <label style={labelStyle}>Message</label>
               <textarea
                 rows={5}
+                name="message"
+                required
                 placeholder="Tell us about your project goals, timeline, and what is currently blocking progress."
                 style={{ ...inputStyle, resize: 'vertical' }}
                 onFocus={(e) => (e.target.style.borderColor = 'var(--color-primary)')}
@@ -234,6 +275,7 @@ export default function Contact() {
             {/* Row 5: Submit */}
             <button
               type="submit"
+              disabled={formStatus === 'submitting'}
               style={{
                 width: '100%',
                 padding: '18px',
@@ -245,19 +287,50 @@ export default function Contact() {
                 letterSpacing: '0.2em',
                 textTransform: 'uppercase',
                 fontWeight: 700,
-                cursor: 'pointer',
+                cursor: formStatus === 'submitting' ? 'not-allowed' : 'pointer',
                 transition: 'all 0.2s',
                 marginTop: '16px',
+                opacity: formStatus === 'submitting' ? 0.7 : 1,
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.background = 'var(--color-primary)';
+                if (formStatus !== 'submitting') {
+                  e.currentTarget.style.background = 'var(--color-primary)';
+                }
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.background = 'transparent';
               }}
             >
-              Send Project Brief
+              {formStatus === 'submitting' ? 'Sending Brief...' : 'Send Project Brief'}
             </button>
+
+            {formStatus === 'success' && (
+              <p style={{
+                fontFamily: 'var(--font-accent)',
+                fontSize: '0.8rem',
+                color: 'var(--color-accent)',
+                marginTop: '16px',
+                textAlign: 'center',
+                fontWeight: 700,
+                letterSpacing: '0.05em',
+              }}>
+                ✓ Success! Your project brief has been received.
+              </p>
+            )}
+
+            {formStatus === 'error' && (
+              <p style={{
+                fontFamily: 'var(--font-accent)',
+                fontSize: '0.8rem',
+                color: '#ff4d4d',
+                marginTop: '16px',
+                textAlign: 'center',
+                fontWeight: 700,
+                letterSpacing: '0.05em',
+              }}>
+                ✕ Failed to send. Please try again or email directly.
+              </p>
+            )}
           </form>
         </motion.div>
       </div>
