@@ -16,6 +16,17 @@ export default function Contact() {
     const formData = new FormData(form);
     
     const accessKey = process.env.NEXT_PUBLIC_WEB3FORMS_KEY || '';
+
+    // If key is missing in development, mock success so the user can test the UI flow
+    if (!accessKey && process.env.NODE_ENV === 'development') {
+      console.warn("Web3Forms Access Key (NEXT_PUBLIC_WEB3FORMS_KEY) is missing. Mocking success response in development mode.");
+      setTimeout(() => {
+        setFormStatus('success');
+        form.reset();
+      }, 1000);
+      return;
+    }
+
     formData.append('access_key', accessKey);
     formData.append('subject', `New Project Brief from ${formData.get('name') || 'Portfolio'}`);
     formData.append('from_name', 'Sam Daramroei Portfolio');
