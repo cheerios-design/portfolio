@@ -160,7 +160,6 @@ export default function Contact() {
           <form
             name="project-brief"
             method="POST"
-            data-netlify="true"
             onSubmit={handleSubmit}
             style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}
           >
