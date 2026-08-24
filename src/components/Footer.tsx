@@ -1,76 +1,96 @@
 'use client';
 
 const LINKS = [
-  { label: 'LinkedIn',  href: 'https://www.linkedin.com/in/sam-daramroei/' },
-  { label: 'Instagram', href: 'https://www.instagram.com/who.stole.my.cheerios/' },
-  { label: 'Email',     href: 'mailto:sam.d@cheeriostudios.com' },
+  { name: 'LinkedIn', url: 'https://www.linkedin.com/in/sam-daramroei/' },
+  { name: 'Instagram', url: 'https://www.instagram.com/cheerio.studio/' },
+  { name: 'Email', url: 'mailto:sam.d@cheeriostudios.com' }
 ];
 
 export default function Footer() {
+  const year = new Date().getFullYear();
+
   return (
-    <footer
-      id="contact"
-      className="footer-pad"
+    <footer 
       style={{
-        background: 'var(--color-surface)',
-        borderTop: '1px solid var(--color-border)',
-        padding: '4rem 48px',
+        background: 'var(--color-surface, #242424)',
+        borderTop: '1px solid rgba(255,255,255,0.06)',
       }}
+      className="w-full"
     >
-      <div
+      <div 
         style={{
-          maxWidth: '1280px', margin: '0 auto',
-          display: 'flex', justifyContent: 'space-between',
-          alignItems: 'center', flexWrap: 'wrap', gap: '24px',
+          maxWidth: '1280px',
+          margin: '0 auto',
+          padding: '4rem 48px',
         }}
+        className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-4 items-center text-center md:text-left"
       >
-        <div>
-          <h2
+        {/* Brand Info (left) */}
+        <div className="flex flex-col gap-2 md:items-start items-center">
+          <h3 
             style={{
-              fontFamily: 'var(--font-heading)',
-              fontSize: '1.6rem',
-              textTransform: 'uppercase',
-              letterSpacing: '-0.02em',
+              fontFamily: 'var(--font-heading, "Space Grotesk")',
+              fontSize: '1.4rem',
               color: 'white',
-              marginBottom: '4px',
+              textTransform: 'uppercase',
+              fontWeight: 'bold',
+              margin: 0,
             }}
           >
-            Sam Daramroei
-          </h2>
-          <span style={{
-            fontFamily: 'var(--font-accent)', fontSize: '0.6rem',
-            color: 'var(--color-accent)', letterSpacing: '0.22em',
-            textTransform: 'uppercase', fontWeight: 700,
-          }}>
-            Content Systems. Marketing Architecture.
-          </span>
+            Cheerio Studios
+          </h3>
+          <p 
+            style={{
+              fontFamily: 'var(--font-accent, "Montserrat")',
+              fontSize: '0.6rem',
+              color: '#FF4600',
+              textTransform: 'uppercase',
+              letterSpacing: '0.22em',
+              margin: 0,
+            }}
+          >
+            One Voice. One Visual. One Studio.
+          </p>
         </div>
 
-        <div style={{ display: 'flex', gap: '36px' }}>
-          {LINKS.map(({ label, href }) => (
+        {/* Social Links (center) */}
+        <div className="flex justify-center items-center gap-6">
+          {LINKS.map((link) => (
             <a
-              key={label}
-              href={href}
+              key={link.name}
+              href={link.url}
               target="_blank"
               rel="noopener noreferrer"
               className="social-link"
               style={{
-                fontFamily: 'var(--font-accent)', fontSize: '0.65rem',
-                letterSpacing: '0.18em', color: 'rgba(255,255,255,0.38)',
+                fontFamily: 'var(--font-accent, "Montserrat")',
+                fontSize: '0.65rem',
+                color: 'rgba(255,255,255,0.38)',
                 textTransform: 'uppercase',
+                fontWeight: 600,
+                transition: 'color 0.2s',
               }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = '#FF4600')}
+              onMouseLeave={(e) => (e.currentTarget.style.color = 'rgba(255,255,255,0.38)')}
             >
-              {label}
+              {link.name}
             </a>
           ))}
         </div>
 
-        <p style={{
-          fontFamily: 'var(--font-body)', fontSize: '0.65rem',
-          color: 'rgba(255,255,255,0.18)',
-        }}>
-          © {new Date().getFullYear()} Sam Daramroei
-        </p>
+        {/* Copyright (right) */}
+        <div className="flex md:justify-end justify-center">
+          <p 
+            style={{
+              fontFamily: 'var(--font-body, "Inter")',
+              fontSize: '0.65rem',
+              color: 'rgba(255,255,255,0.18)',
+              margin: 0,
+            }}
+          >
+            © {year} Cheerio Studios
+          </p>
+        </div>
       </div>
     </footer>
   );

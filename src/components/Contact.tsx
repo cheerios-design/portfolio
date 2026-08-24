@@ -50,10 +50,11 @@ export default function Contact() {
   const inputStyle = {
     width: '100%',
     background: 'transparent',
-    border: '1px solid var(--color-border)',
-    color: 'white',
+    border: '1px solid rgba(26,26,26,0.12)',
+    borderRadius: 'var(--radius-tile-sm, 12px)',
+    color: '#1A1A1A',
     padding: '16px',
-    fontFamily: 'var(--font-body)',
+    fontFamily: 'var(--font-body, "Inter")',
     fontSize: '0.9rem',
     outline: 'none',
     transition: 'border-color 0.2s',
@@ -61,9 +62,9 @@ export default function Contact() {
 
   const labelStyle = {
     display: 'block',
-    fontFamily: 'var(--font-accent)',
+    fontFamily: 'var(--font-accent, "Montserrat")',
     fontSize: '0.65rem',
-    color: 'var(--color-accent)',
+    color: '#FF4600',
     letterSpacing: '0.15em',
     textTransform: 'uppercase' as const,
     marginBottom: '8px',
@@ -74,58 +75,49 @@ export default function Contact() {
     <section
       id="contact"
       ref={ref}
-      className="section-pad"
       style={{
-        background: 'var(--color-surface)',
+        background: '#F5F0EB',
         padding: '8rem 0',
-        borderTop: '1px solid var(--color-border)',
       }}
     >
       <div
-        className="grid-2-col"
         style={{
           maxWidth: '1280px',
           margin: '0 auto',
           padding: '0 48px',
-          display: 'grid',
-          gridTemplateColumns: '1fr 1fr',
-          gap: '100px',
         }}
+        className="grid grid-cols-1 md:grid-cols-2 gap-20 md:gap-[80px]"
       >
         {/* ── LEFT COLUMN ── */}
         <div>
           <motion.h2
             {...fade(0)}
             style={{
-              fontSize: 'clamp(3.5rem, 7vw, 6.5rem)',
-              fontFamily: 'var(--font-heading)',
+              fontSize: 'clamp(3rem, 6vw, 5.5rem)',
+              fontFamily: 'var(--font-heading, "Space Grotesk")',
               textTransform: 'uppercase',
-              color: 'var(--color-primary)',
+              color: '#FF4600',
               lineHeight: 0.95,
               letterSpacing: '-0.03em',
               marginBottom: '32px',
+              whiteSpace: 'pre-line'
             }}
           >
-            LET&apos;S ALIGN
-            <br />
-            YOUR
-            <br />
-            BRAND.
+            {"LET'S BUILD\nSOMETHING\nGREAT."}
           </motion.h2>
 
           <motion.p
             {...fade(0.1)}
             style={{
-              fontFamily: 'var(--font-heading)',
-              fontSize: '1.25rem',
-              color: 'white',
+              fontFamily: 'var(--font-heading, "Space Grotesk")',
+              fontSize: '1.15rem',
+              color: '#1A1A1A',
               lineHeight: 1.4,
               textTransform: 'uppercase',
               maxWidth: '90%',
             }}
           >
-            Tell us where your current workflow is breaking down and we will shape a
-            focused plan that unifies strategy, visuals, and execution.
+            Tell us where your current workflow is breaking down and we'll shape a focused plan that unifies strategy, visuals, and execution.
           </motion.p>
         </div>
 
@@ -134,9 +126,9 @@ export default function Contact() {
           <div style={{ marginBottom: '32px' }}>
             <span
               style={{
-                fontFamily: 'var(--font-accent)',
+                fontFamily: 'var(--font-accent, "Montserrat")',
                 fontSize: '0.7rem',
-                color: 'var(--color-accent)',
+                color: '#FF4600',
                 letterSpacing: '0.15em',
                 textTransform: 'uppercase',
                 fontWeight: 700,
@@ -148,9 +140,9 @@ export default function Contact() {
             </span>
             <p
               style={{
-                fontFamily: 'var(--font-body)',
+                fontFamily: 'var(--font-body, "Inter")',
                 fontSize: '0.9rem',
-                color: 'rgba(255,255,255,0.6)',
+                color: 'rgba(26,26,26,0.5)',
               }}
             >
               The more context you share, the faster we can map your next move.
@@ -166,24 +158,16 @@ export default function Contact() {
             <input type="hidden" name="form-name" value="project-brief" />
 
             {/* Row 1: Name & Company */}
-            <div
-              className="grid-2-col"
-              style={{
-                display: 'grid',
-                gridTemplateColumns: '1fr 1fr',
-                gap: '24px',
-              }}
-            >
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label style={labelStyle}>Name</label>
                 <input
                   type="text"
                   name="name"
                   required
-                  placeholder="Your name"
                   style={inputStyle}
-                  onFocus={(e) => (e.target.style.borderColor = 'var(--color-primary)')}
-                  onBlur={(e) => (e.target.style.borderColor = 'var(--color-border)')}
+                  onFocus={(e) => (e.target.style.borderColor = '#FF4600')}
+                  onBlur={(e) => (e.target.style.borderColor = 'rgba(26,26,26,0.12)')}
                 />
               </div>
               <div>
@@ -191,10 +175,9 @@ export default function Contact() {
                 <input
                   type="text"
                   name="company"
-                  placeholder="Your company"
                   style={inputStyle}
-                  onFocus={(e) => (e.target.style.borderColor = 'var(--color-primary)')}
-                  onBlur={(e) => (e.target.style.borderColor = 'var(--color-border)')}
+                  onFocus={(e) => (e.target.style.borderColor = '#FF4600')}
+                  onBlur={(e) => (e.target.style.borderColor = 'rgba(26,26,26,0.12)')}
                 />
               </div>
             </div>
@@ -206,35 +189,32 @@ export default function Contact() {
                 type="email"
                 name="email"
                 required
-                placeholder="your@email.com"
                 style={inputStyle}
-                onFocus={(e) => (e.target.style.borderColor = 'var(--color-primary)')}
-                onBlur={(e) => (e.target.style.borderColor = 'var(--color-border)')}
+                onFocus={(e) => (e.target.style.borderColor = '#FF4600')}
+                onBlur={(e) => (e.target.style.borderColor = 'rgba(26,26,26,0.12)')}
               />
             </div>
 
             {/* Row 3: Select */}
             <div>
-              <label style={labelStyle}>Biggest Pain Point</label>
+              <label style={labelStyle}>Pain Point</label>
               <div style={{ position: 'relative' }}>
                 <select
-                  name="pain-point"
+                  name="painPoint"
                   defaultValue=""
                   style={{
                     ...inputStyle,
                     appearance: 'none',
                     cursor: 'pointer',
                   }}
-                  onFocus={(e) => (e.target.style.borderColor = 'var(--color-primary)')}
-                  onBlur={(e) => (e.target.style.borderColor = 'var(--color-border)')}
+                  onFocus={(e) => (e.target.style.borderColor = '#FF4600')}
+                  onBlur={(e) => (e.target.style.borderColor = 'rgba(26,26,26,0.12)')}
                 >
-                  <option value="" disabled hidden>
-                    Select one...
-                  </option>
-                  <option value="strategy" style={{ color: 'black' }}>Brand Strategy</option>
-                  <option value="content" style={{ color: 'black' }}>Content Systems</option>
-                  <option value="seo" style={{ color: 'black' }}>Search Visibility</option>
-                  <option value="other" style={{ color: 'black' }}>Other</option>
+                  <option value="" disabled hidden>Select one...</option>
+                  <option value="Brand Strategy" style={{ color: 'black' }}>Brand Strategy</option>
+                  <option value="Content Systems" style={{ color: 'black' }}>Content Systems</option>
+                  <option value="Search Visibility" style={{ color: 'black' }}>Search Visibility</option>
+                  <option value="Other" style={{ color: 'black' }}>Other</option>
                 </select>
                 {/* Custom dropdown arrow */}
                 <div
@@ -244,6 +224,7 @@ export default function Contact() {
                     top: '50%',
                     transform: 'translateY(-50%)',
                     pointerEvents: 'none',
+                    color: '#1A1A1A'
                   }}
                 >
                   <svg
@@ -268,13 +249,12 @@ export default function Contact() {
             <div>
               <label style={labelStyle}>Message</label>
               <textarea
-                rows={5}
+                rows={4}
                 name="message"
                 required
-                placeholder="Tell us about your project goals, timeline, and what is currently blocking progress."
                 style={{ ...inputStyle, resize: 'vertical' }}
-                onFocus={(e) => (e.target.style.borderColor = 'var(--color-primary)')}
-                onBlur={(e) => (e.target.style.borderColor = 'var(--color-border)')}
+                onFocus={(e) => (e.target.style.borderColor = '#FF4600')}
+                onBlur={(e) => (e.target.style.borderColor = 'rgba(26,26,26,0.12)')}
               />
             </div>
 
@@ -285,10 +265,10 @@ export default function Contact() {
               style={{
                 width: '100%',
                 padding: '18px',
-                background: 'transparent',
-                border: '1px solid var(--color-primary)',
+                background: '#1A1A1A',
+                borderRadius: 'var(--radius-tile-sm, 12px)',
                 color: 'white',
-                fontFamily: 'var(--font-accent)',
+                fontFamily: 'var(--font-accent, "Montserrat")',
                 fontSize: '0.75rem',
                 letterSpacing: '0.2em',
                 textTransform: 'uppercase',
@@ -300,21 +280,21 @@ export default function Contact() {
               }}
               onMouseEnter={(e) => {
                 if (formStatus !== 'submitting') {
-                  e.currentTarget.style.background = 'var(--color-primary)';
+                  e.currentTarget.style.background = '#FF4600';
                 }
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.background = 'transparent';
+                e.currentTarget.style.background = '#1A1A1A';
               }}
             >
-              {formStatus === 'submitting' ? 'Sending Brief...' : 'Send Project Brief'}
+              {formStatus === 'submitting' ? 'Sending...' : 'Submit'}
             </button>
 
             {formStatus === 'success' && (
               <p style={{
-                fontFamily: 'var(--font-accent)',
+                fontFamily: 'var(--font-accent, "Montserrat")',
                 fontSize: '0.8rem',
-                color: 'var(--color-accent)',
+                color: 'green',
                 marginTop: '16px',
                 textAlign: 'center',
                 fontWeight: 700,
@@ -326,7 +306,7 @@ export default function Contact() {
 
             {formStatus === 'error' && (
               <p style={{
-                fontFamily: 'var(--font-accent)',
+                fontFamily: 'var(--font-accent, "Montserrat")',
                 fontSize: '0.8rem',
                 color: '#ff4d4d',
                 marginTop: '16px',

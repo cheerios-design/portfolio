@@ -3,22 +3,24 @@ import './globals.css';
 import SmoothScroll from '@/components/SmoothScroll';
 
 export const metadata: Metadata = {
-  title: 'Sam Daramroei — Content Creator & Marketing Strategist',
+  title: 'Cheerio Studios — Digital Creative Studio',
   description:
-    'Digital portfolio of Sam Daramroei. Content creator and technical strategist specializing in SEO optimization, global community management, and design-led marketing solutions.',
+    'Cheerio Studios is a digital creative studio specializing in brand identity, web design & development, strategy & consulting, and digital asset management. We help businesses create and elevate their digital presence.',
   keywords: [
-    'Sam Daramroei',
-    'content creator',
-    'marketing strategist',
-    'SEO',
-    'community management',
+    'Cheerio Studios',
+    'digital studio',
     'brand identity',
-    'digital marketing',
+    'web design',
+    'web development',
+    'strategy',
+    'consulting',
+    'digital presence',
+    'creative agency',
   ],
   openGraph: {
-    title: 'Sam Daramroei — Content Creator & Marketing Strategist',
+    title: 'Cheerio Studios — Digital Creative Studio',
     description:
-      'Digital portfolio of Sam Daramroei. Content creator and technical strategist specializing in SEO optimization, global community management, and design-led marketing solutions.',
+      'Cheerio Studios is a digital creative studio specializing in brand identity, web design & development, strategy & consulting, and digital asset management.',
     type: 'website',
   },
   manifest: '/favicons/manifest.json',
@@ -42,9 +44,9 @@ export const metadata: Metadata = {
     ],
   },
   other: {
-    'msapplication-TileColor': '#ffffff',
+    'msapplication-TileColor': '#1A1A1A',
     'msapplication-TileImage': '/favicons/ms-icon-144x144.png',
-    'theme-color': '#ffffff',
+    'theme-color': '#1A1A1A',
   },
 };
 
@@ -58,8 +60,12 @@ export default function RootLayout({
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap"
+          rel="stylesheet"
+        />
       </head>
-      <body style={{ background: '#242834' }}>
+      <body style={{ background: '#1A1A1A' }}>
         <SmoothScroll>{children}</SmoothScroll>
       </body>
     </html>

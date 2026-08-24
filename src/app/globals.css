@@ -1,25 +1,30 @@
-/* ─── Adobe Fonts (Dazzle Unicase) — MUST BE FIRST ─────────────── */
-@import url('https://use.typekit.net/mim0jxc.css');
-
-/* ─── Google Fonts ────────────────────────────────────────────────── */
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&display=swap');
+/* ─── Fonts ─────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Montserrat:wght@500;600;700&family=Space+Grotesk:wght@500;700;800&display=swap');
 
 @import "tailwindcss";
 
-/* ─── Design Tokens ───────────────────────────────────────────────── */
+/* ─── Design Tokens ──────────────────────────────────────── */
 :root {
-  --color-base: #242834;
-  --color-primary: #7d53ef;
-  --color-accent: #b6ff00;
-  --color-surface: #1c2030;
-  --color-border: rgba(255, 255, 255, 0.07);
-
-  --font-heading: 'dazzle-unicase', Georgia, serif;
-  --font-body: 'Google Sans', system-ui, sans-serif;
+  --color-base: #1A1A1A;
+  --color-primary: #FF4600;
+  --color-accent: #F5F0EB;
+  --color-surface: #242424;
+  --color-surface-light: #F5F0EB;
+  --color-border: rgba(255, 255, 255, 0.08);
+  --color-border-light: rgba(26, 26, 26, 0.08);
+  --color-text-muted: rgba(255, 255, 255, 0.5);
+  --color-text-muted-dark: rgba(26, 26, 26, 0.5);
+  
+  --font-heading: 'Space Grotesk', system-ui, sans-serif;
+  --font-body: 'Inter', system-ui, sans-serif;
   --font-accent: 'Montserrat', system-ui, sans-serif;
+  
+  --radius-tile: 20px;
+  --radius-tile-lg: 28px;
+  --radius-tile-sm: 12px;
 }
 
-/* ─── Reset ───────────────────────────────────────────────────────── */
+/* ─── Reset ──────────────────────────────────────────────── */
 *,
 *::before,
 *::after {
@@ -27,164 +32,221 @@
 }
 
 html {
-  scroll-behavior: auto !important;
+  scroll-behavior: smooth;
 }
 
-/* ─── Lenis Scroll Momentum Reset ─────────────────────────────────── */
+/* ─── Lenis Scroll Momentum Reset ────────────────────────── */
 html.lenis,
 html.lenis body {
   height: auto;
 }
-
 .lenis.lenis-smooth {
   scroll-behavior: auto !important;
 }
-
 .lenis.lenis-smooth [data-lenis-prevent] {
   overscroll-behavior: contain;
 }
-
 .lenis.lenis-stopped {
   overflow: hidden;
 }
-
 .lenis.lenis-smooth iframe {
   pointer-events: none;
 }
 
+/* ─── Base Styles ────────────────────────────────────────── */
 body {
-  background: var(--color-base);
+  background-color: var(--color-base);
   color: #ffffff;
   font-family: var(--font-body);
-  font-size: 16px;
-  line-height: 1.65;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overflow-x: hidden;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
 }
 
-/* ─── Typography — all headings uppercase ─────────────────────────── */
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
+/* ─── Typography ─────────────────────────────────────────── */
+h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-heading);
+  font-weight: 800;
   text-transform: uppercase;
-  font-weight: 700;
-  line-height: 1.05;
   letter-spacing: -0.02em;
+  line-height: 1.1;
   margin: 0;
 }
 
-a {
-  text-decoration: none;
-  transition: color 0.2s;
-}
-
-/* ─── Scrollbar ───────────────────────────────────────────────────── */
+/* ─── Scrollbar ──────────────────────────────────────────── */
 ::-webkit-scrollbar {
-  width: 4px;
+  width: 8px;
+  height: 8px;
 }
-
 ::-webkit-scrollbar-track {
   background: var(--color-base);
 }
-
 ::-webkit-scrollbar-thumb {
   background: var(--color-primary);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #ff5e22;
 }
 
-/* ─── Utility: Section label (// prefix) ─────────────────────────── */
+/* ─── Utilities ──────────────────────────────────────────── */
+
+/* Section Label Utility */
 .section-label {
+  font-family: var(--font-accent);
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 3rem;
+  gap: 0.5rem;
+  color: var(--color-text-muted);
 }
-
 .section-label::before {
   content: '//';
-  color: var(--color-accent);
-  font-family: var(--font-accent);
-  font-size: 0.75rem;
+  color: var(--color-primary);
   font-weight: 700;
 }
 
-.section-label span {
-  color: rgba(255, 255, 255, 0.35);
-  font-family: var(--font-accent);
-  font-size: 0.65rem;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
+/* ─── Puzzle Tile Shapes ─────────────────────────────────────── */
+.tile-card {
+  border-radius: var(--radius-tile);
+  overflow: hidden;
 }
 
-/* ─── Utility: divider line ───────────────────────────────────────── */
-.row-divider {
-  border: none;
-  border-top: 1px solid var(--color-border);
+.tile-card-lg {
+  border-radius: var(--radius-tile-lg);
+  overflow: hidden;
 }
 
-/* ─── Project Title Link ────────────────────────────────────────── */
-.project-title-link {
-  color: white;
-  transition: color 0.2s ease-in-out;
+.tile-card-sm {
+  border-radius: var(--radius-tile-sm);
+  overflow: hidden;
 }
 
+/* Notched corner (creates the concave puzzle-piece cutout) */
+.tile-notch {
+  position: relative;
+}
+
+.tile-notch::before {
+  content: '';
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  background: var(--color-base);
+  border-radius: 50%;
+}
+
+.tile-notch-tl::before {
+  top: -12px;
+  left: -12px;
+}
+
+.tile-notch-tr::before {
+  top: -12px;
+  right: -12px;
+}
+
+.tile-notch-bl::before {
+  bottom: -12px;
+  left: -12px;
+}
+
+.tile-notch-br::before {
+  bottom: -12px;
+  right: -12px;
+}
+
+/* Light Section Utility */
+.section-light {
+  background: var(--color-surface-light);
+  color: var(--color-base);
+}
+
+.section-light h1,
+.section-light h2,
+.section-light h3,
+.section-light h4,
+.section-light h5,
+.section-light h6 {
+  color: var(--color-base);
+}
+
+/* Smooth Transition */
+.transition-smooth {
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* ─── Links & Hovers ─────────────────────────────────────── */
 .project-title-link:hover {
-  color: #7d53ef;
-}
-
-
-/* ─── Social Links ──────────────────────────────────────────────── */
-.social-link {
-  transition: color 0.2s ease-in-out;
+  color: #FF4600;
 }
 
 .social-link:hover {
-  color: #b6ff00 !important;
-}
-
-/* ─── Mobile Responsiveness (Only affects < 768px) ─────────────── */
-@media (max-width: 768px) {
-  .grid-2-col {
-    grid-template-columns: 1fr !important;
-    gap: 40px !important;
-  }
-
-  .grid-project {
-    grid-template-columns: 1fr !important;
-    gap: 32px !important;
-  }
-
-  .section-pad {
-    padding: 4rem 0 !important;
-  }
-
-  .footer-pad {
-    padding: 3rem 24px !important;
-  }
-
-  .hide-on-mobile {
-    display: none !important;
-  }
-
-  .show-on-mobile {
-    display: flex !important;
-  }
-}
-
-@media (min-width: 769px) {
-  .show-on-mobile {
-    display: none !important;
-  }
-}
-
-.desktop-nav-link {
-  transition: color 0.2s ease-in-out;
+  color: #FF4600;
 }
 
 .desktop-nav-link:hover {
-  color: var(--color-primary) !important;
+  color: var(--color-primary);
+}
+
+/* Row Divider */
+.row-divider {
+  border-top: 1px solid var(--color-border);
+  width: 100%;
+}
+.section-light .row-divider {
+  border-top: 1px solid var(--color-border-light);
+}
+
+/* ─── Layout & Responsive Grids ──────────────────────────── */
+.section-pad {
+  padding: 4rem 1.5rem;
+}
+.footer-pad {
+  padding: 4rem 1.5rem 2rem;
+}
+.grid-2-col {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+}
+.grid-project {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+}
+
+@media (min-width: 768px) {
+  .section-pad {
+    padding: 6rem 2.5rem;
+  }
+  .footer-pad {
+    padding: 6rem 2.5rem 3rem;
+  }
+  .grid-2-col {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .grid-project {
+    grid-template-columns: 1fr 2fr;
+  }
+}
+
+.hide-on-mobile {
+  display: none;
+}
+.show-on-mobile {
+  display: block;
+}
+
+@media (min-width: 768px) {
+  .hide-on-mobile {
+    display: block;
+  }
+  .show-on-mobile {
+    display: none;
+  }
 }

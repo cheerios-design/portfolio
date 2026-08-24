@@ -1,383 +1,400 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import Image from 'next/image';
-import profileOrigin from '../../public/SamProfile_origin.png';
-import profileInverted from '../../public/SamProfile_inverted.png';
 
-const NAV_LINKS = [
-  { label: 'Projects', href: '#work' },
+// --- Types ---
+type NavLink = {
+  label: string;
+  href: string;
+};
+
+const NAV_LINKS: NavLink[] = [
+  { label: 'Services', href: '#services' },
+  { label: 'Work', href: '#work' },
   { label: 'About', href: '#about' },
   { label: 'Contact', href: '#contact' },
 ];
 
 export default function Hero() {
-  const [cursor, setCursor] = useState({ x: 0, y: 0, radius: 100, active: false });
-  const photoRef = useRef<HTMLDivElement>(null);
   const [isMobile, setIsMobile] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 768);
-    checkMobile(); // Check immediately
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Auto-animate circle on mobile: random zigzag hover with random scaling
-  useEffect(() => {
-    if (!isMobile) return;
-
-    let startTime = Date.now();
-    let animationFrame: number;
-
-    const animateCircle = () => {
-      if (!photoRef.current) return;
-      const rect = photoRef.current.getBoundingClientRect();
-      const centerX = rect.width / 2;
-      const centerY = rect.height / 2;
-      const radiusX = rect.width * 0.35;
-      const radiusY = rect.height * 0.35;
-
-      const time = (Date.now() - startTime) / 1000;
-
-      // Random zigzag hover coordinates using multiple frequencies
-      const dx = Math.sin(time * 0.75) * 0.5 +
-        Math.cos(time * 1.85) * 0.35 +
-        Math.sin(time * 4.3) * 0.15;
-
-      const dy = Math.cos(time * 0.65) * 0.5 +
-        Math.sin(time * 2.15) * 0.35 +
-        Math.cos(time * 3.8) * 0.15;
-
-      // Scale varying continuously between 65px and 135px
-      const radiusScale = 1.0 +
-        Math.sin(time * 1.2) * 0.25 +
-        Math.cos(time * 2.9) * 0.1;
-      const animatedRadius = 100 * radiusScale;
-
-      setCursor({
-        x: centerX + dx * radiusX,
-        y: centerY + dy * radiusY,
-        radius: animatedRadius,
-        active: true,
-      });
-
-      animationFrame = requestAnimationFrame(animateCircle);
-    };
-
-    animationFrame = requestAnimationFrame(animateCircle);
-
-    return () => cancelAnimationFrame(animationFrame);
-  }, [isMobile]);
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (isMobile || !photoRef.current) return;
-    const rect = photoRef.current.getBoundingClientRect();
-    setCursor({
-      x: e.clientX - rect.left,
-      y: e.clientY - rect.top,
-      radius: 150,
-      active: true,
-    });
+  // --- Animation Variants ---
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: { 
+      opacity: 1,
+      transition: { staggerChildren: 0.1, delayChildren: 0.2 } 
+    }
   };
 
-  const handleMouseLeave = () => {
-    if (isMobile) return;
-    setCursor((prev) => ({ ...prev, active: false }));
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: { 
+      y: 0, 
+      opacity: 1,
+      transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } 
+    }
   };
-
-  const closeMenu = () => setIsMenuOpen(false);
 
   return (
-    <section
-      id="hero"
+    <section 
       style={{
         position: 'relative',
-        height: '100vh',
-        minHeight: '720px',
-        background: 'var(--color-base)',
+        minHeight: '100vh',
+        width: '100%',
+        backgroundColor: 'var(--color-base, #1A1A1A)',
+        color: '#FFFFFF',
         overflow: 'hidden',
         display: 'flex',
-        alignItems: 'center',
-        isolation: 'isolate',
+        flexDirection: 'column'
       }}
     >
-      {/* ── hero_image_background ── */}
-      <div
-        id="hero_image_background"
+      {/* 1. Background Decorative Tiles (Interlocking) */}
+      <div 
         style={{
           position: 'absolute',
           top: 0,
-          left: '50%',
-          transform: 'translateX(-50%)',
-          width: 'clamp(320px, 100%, 545px)',
-          height: '100%',
-          backgroundColor: '#f8f0e4',
-          zIndex: -1,
+          left: 0,
+          right: 0,
+          bottom: 0,
           pointerEvents: 'none',
-        }}
-      />
-
-      {/* ── NAV ── */}
-      <motion.nav
-        initial={{ opacity: 0, y: -14 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        style={{
-          position: 'absolute', top: 0, left: 0, right: 0,
-          display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-          padding: 'clamp(20px, 4vw, 32px) clamp(24px, 5vw, 48px)', zIndex: 50,
+          zIndex: 0,
+          overflow: 'hidden'
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          {/* Logo Dot */}
-          <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: 'var(--color-primary)' }} />
-          <span style={{
-            fontFamily: 'var(--font-accent)', fontSize: '0.8rem',
-            color: isMenuOpen ? 'black' : (isMobile ? 'var(--color-base)' : 'white'), fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em',
-            transition: 'color 0.3s ease'
-          }}>
-            Sam Daramroei
+        {/* Top Right Cluster */}
+        <div style={{ position: 'absolute', top: '10%', right: '-5%', transform: 'rotate(-5deg)', opacity: 0.08 }}>
+          <svg width="400" height="300" viewBox="0 0 400 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="100" y="20" width="280" height="120" rx="20" fill="var(--color-primary, #FF4600)" />
+            <rect x="40" y="100" width="200" height="100" rx="20" fill="var(--color-primary, #FF4600)" />
+            <rect x="150" y="160" width="120" height="80" rx="20" fill="var(--color-primary, #FF4600)" />
+          </svg>
+        </div>
+        
+        {/* Bottom Left Cluster */}
+        <div style={{ position: 'absolute', bottom: '15%', left: '-5%', transform: 'rotate(10deg)', opacity: 0.06 }}>
+          <svg width="350" height="250" viewBox="0 0 350 250" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="20" y="20" width="220" height="100" rx="20" fill="var(--color-primary, #FF4600)" />
+            <rect x="80" y="90" width="180" height="90" rx="20" fill="var(--color-primary, #FF4600)" />
+            <rect x="120" y="150" width="100" height="80" rx="20" fill="var(--color-primary, #FF4600)" />
+          </svg>
+        </div>
+      </div>
+
+      {/* 2. Navigation Bar */}
+      <motion.nav 
+        initial={{ y: -20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.5, ease: 'easeOut' }}
+        style={{
+          position: 'relative',
+          zIndex: 20,
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          padding: '1.5rem 5%',
+          width: '100%'
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+          <img 
+            src="/assets/logos/svgs/colored_main_logo.svg" 
+            alt="Cheerio Studios" 
+            style={{ height: '36px', width: 'auto' }}
+          />
+          <span 
+            style={{ 
+              fontFamily: 'var(--font-heading, "Space Grotesk", system-ui, sans-serif)', 
+              fontWeight: 'bold', 
+              textTransform: 'uppercase', 
+              letterSpacing: '0.05em',
+              fontSize: '1.1rem',
+              color: 'white'
+            }}
+          >
+            Cheerio Studios
           </span>
         </div>
 
-        {/* Desktop Links */}
-        <div className="hide-on-mobile" style={{ display: 'flex', gap: '65px' }}>
-          {NAV_LINKS.map(({ label, href }) => (
-            <a
-              key={label}
-              href={href}
-              className="desktop-nav-link"
-              style={{
-                fontFamily: 'var(--font-accent)', fontSize: '1rem',
-                letterSpacing: '0.14em', textTransform: 'uppercase',
-                color: 'rgba(255,255,255,0.6)',
-              }}
-            >
-              {label}
-            </a>
-          ))}
-        </div>
-
-        {/* Mobile Hamburger */}
-        <button
-          className="show-on-mobile"
-          onClick={() => setIsMenuOpen(!isMenuOpen)}
-          style={{
-            background: 'none', border: 'none', color: isMenuOpen ? 'black' : (isMobile ? 'var(--color-base)' : 'white'), cursor: 'pointer',
-            padding: '8px', zIndex: 60, display: 'flex', flexDirection: 'column', gap: '4px',
-          }}
-          aria-label="Toggle Menu"
-        >
-          <motion.div
-            animate={{ rotate: isMenuOpen ? 45 : 0, y: isMenuOpen ? 6 : 0 }}
-            style={{ width: '24px', height: '2px', background: 'currentColor', originX: 0.5 }}
-          />
-          <motion.div
-            animate={{ opacity: isMenuOpen ? 0 : 1 }}
-            style={{ width: '24px', height: '2px', background: 'currentColor' }}
-          />
-          <motion.div
-            animate={{ rotate: isMenuOpen ? -45 : 0, y: isMenuOpen ? -6 : 0 }}
-            style={{ width: '24px', height: '2px', background: 'currentColor', originX: 0.5 }}
-          />
-        </button>
+        {isMobile ? (
+          <button 
+            onClick={() => setIsMenuOpen(true)}
+            style={{
+              background: 'none',
+              border: 'none',
+              color: 'white',
+              cursor: 'pointer',
+              padding: '0.5rem',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '5px'
+            }}
+            aria-label="Open Menu"
+          >
+            <span style={{ width: '24px', height: '2px', backgroundColor: 'white', display: 'block' }} />
+            <span style={{ width: '24px', height: '2px', backgroundColor: 'white', display: 'block' }} />
+            <span style={{ width: '16px', height: '2px', backgroundColor: 'white', display: 'block', alignSelf: 'flex-end' }} />
+          </button>
+        ) : (
+          <div style={{ display: 'flex', gap: '2rem' }}>
+            {NAV_LINKS.map((link) => (
+              <a 
+                key={link.label} 
+                href={link.href}
+                style={{
+                  fontFamily: 'var(--font-accent, "Montserrat", system-ui, sans-serif)',
+                  fontSize: '0.8rem',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.12em',
+                  color: 'rgba(255,255,255,0.6)',
+                  textDecoration: 'none',
+                  transition: 'color 0.2s ease'
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.color = '#FFFFFF'}
+                onMouseLeave={(e) => e.currentTarget.style.color = 'rgba(255,255,255,0.6)'}
+              >
+                {link.label}
+              </a>
+            ))}
+          </div>
+        )}
       </motion.nav>
 
-      {/* ── FULLSCREEN MOBILE OVERLAY MENU ── */}
+      {/* Mobile Menu Overlay */}
       <AnimatePresence>
-        {isMenuOpen && (
+        {isMobile && isMenuOpen && (
           <motion.div
-            initial={{ opacity: 0, y: '-100%' }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: '-100%' }}
-            transition={{ duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
+            initial={{ opacity: 0, x: '100%' }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: '100%' }}
+            transition={{ type: 'tween', duration: 0.3 }}
             style={{
-              position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
-              background: 'var(--color-accent)', zIndex: 45,
-              display: 'flex', flexDirection: 'column',
-              justifyContent: 'center', alignItems: 'center', gap: '48px',
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              width: '100vw',
+              height: '100vh',
+              backgroundColor: 'var(--color-primary, #FF4600)',
+              zIndex: 100,
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center'
             }}
           >
-            {NAV_LINKS.map(({ label, href }, i) => (
-              <motion.a
-                key={label}
-                href={href}
-                onClick={closeMenu}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 + i * 0.1, duration: 0.4 }}
-                style={{
-                  fontFamily: 'var(--font-heading)',
-                  fontSize: 'clamp(2rem, 8vw, 4rem)',
-                  color: 'black',
-                  textTransform: 'uppercase',
-                  textDecoration: 'none',
-                }}
-              >
-                {label}
-              </motion.a>
-            ))}
+            <button 
+              onClick={() => setIsMenuOpen(false)}
+              style={{
+                position: 'absolute',
+                top: '1.5rem',
+                right: '5%',
+                background: 'none',
+                border: 'none',
+                color: 'white',
+                fontSize: '2rem',
+                cursor: 'pointer',
+                padding: '0.5rem'
+              }}
+              aria-label="Close Menu"
+            >
+              ×
+            </button>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem', alignItems: 'center' }}>
+              {NAV_LINKS.map((link) => (
+                <a 
+                  key={link.label} 
+                  href={link.href}
+                  onClick={() => setIsMenuOpen(false)}
+                  style={{
+                    fontFamily: 'var(--font-heading, "Space Grotesk", system-ui, sans-serif)',
+                    fontSize: '2rem',
+                    fontWeight: 'bold',
+                    color: '#FFFFFF',
+                    textDecoration: 'none',
+                    textTransform: 'uppercase'
+                  }}
+                >
+                  {link.label}
+                </a>
+              ))}
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* ── PHOTO (CENTERED) ── */}
-      <motion.div
-        ref={photoRef}
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.9, delay: 0.1, ease: [0.25, 0.46, 0.45, 0.94] }}
-        onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
-        onMouseEnter={() => !isMobile && setCursor((prev) => ({ ...prev, active: true }))}
+      {/* 3. Main Hero Content */}
+      <div 
         style={{
-          position: 'absolute',
-          bottom: 0,
-          left: isMobile ? '12%' : '32%',
-          transform: 'translateX(-50%)',
-          width: 'clamp(300px, 80%, 600px)',
-          height: isMobile ? '70%' : '85%',
-          cursor: isMobile ? 'default' : 'crosshair',
+          position: 'relative',
           zIndex: 10,
+          flex: 1,
+          display: 'flex',
+          alignItems: 'center',
+          padding: '0 5%',
+          width: '100%',
+          maxWidth: '1440px',
+          margin: '0 auto'
         }}
       >
-        <Image
-          src={profileOrigin}
-          alt="Sam Daramroei"
-          fill
-          priority
-          sizes="(max-width: 768px) 90vw, 50vw"
-          style={{ objectFit: 'cover', objectPosition: 'bottom center' }}
-        />
-
-        <Image
-          src={profileInverted}
-          alt="Sam Daramroei (inverted)"
-          fill
-          priority
-          sizes="(max-width: 768px) 90vw, 50vw"
-          style={{
-            objectFit: 'cover',
-            objectPosition: 'bottom center',
-            clipPath: `circle(${isMobile ? (cursor.radius || 100) : 150}px at ${cursor.x}px ${cursor.y}px)`,
-            opacity: cursor.active ? 1 : 0,
-            transition: isMobile ? 'none' : 'opacity 0.25s ease',
-          }}
-        />
-
-        <div
-          style={{
-            position: 'absolute',
-            bottom: 0, left: 0, right: 0, height: '15%',
-            background: 'linear-gradient(to top, var(--color-base) 0%, transparent 100%)',
-            pointerEvents: 'none',
-          }}
-        />
-      </motion.div>
-
-      {/* ── LEFT CONTENT ── */}
-      <motion.div
-        initial={{ opacity: 0, x: -30 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.7, delay: 0.3 }}
-        style={{
-          position: 'absolute',
-          left: isMobile ? '24px' : '48px',
-          top: isMobile ? '15%' : 'auto',
-          zIndex: 20,
-          maxWidth: '340px',
-          pointerEvents: 'none',
-        }}
-      >
-        <h2 style={{
-          fontFamily: 'var(--font-body)',
-          fontWeight: 'bolder',
-          fontSize: 'clamp(1.6rem, 4vw, 2.4rem)',
-          lineHeight: 1.15,
-          color: isMobile ? 'var(--color-base)' : 'white',
-          letterSpacing: '-0.02em',
-        }}>
-          Content Systems &amp; Marketing <span style={{ color: 'var(--color-primary)' }}>Architecture</span>
-        </h2>
-      </motion.div>
-
-      {/* ── RIGHT CONTENT ── */}
-      <motion.div
-        initial={{ opacity: 0, x: 30 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.7, delay: 0.4 }}
-        className="hide-on-mobile"
-        style={{
-          position: 'absolute',
-          right: '48px',
-          zIndex: 20,
-          maxWidth: '280px',
-          flexDirection: 'column',
-        }}
-      >
-        <p style={{
-          fontFamily: 'var(--font-body)', fontSize: '0.9rem',
-          color: 'rgba(255,255,255,0.6)', lineHeight: 1.6,
-          marginBottom: '32px',
-        }}>
-          Hi, I&apos;m Sam Daramroei—building digital systems and narrative strategies that convert attention into measurable impact.
-        </p>
-
-        <a
-          href="#work"
-          style={{
-            display: 'inline-flex', alignItems: 'center', gap: '16px',
-            background: 'var(--color-primary)', color: 'white',
-            padding: '12px 24px 12px 12px', borderRadius: '100px',
-            fontFamily: 'var(--font-accent)', fontSize: '0.75rem',
-            fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em',
-            transition: 'transform 0.2s ease',
-            width: 'fit-content',
-          }}
-          onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.02)')}
-          onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
+        <motion.div 
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+          style={{ maxWidth: '800px', width: '100%' }}
         >
-          <div style={{
-            background: 'white', color: 'var(--color-primary)',
-            width: '32px', height: '32px', borderRadius: '50%',
-            display: 'flex', alignItems: 'center', justifyContent: 'center'
-          }}>
-            →
-          </div>
-          View My Work
-        </a>
-      </motion.div>
+          <motion.div 
+            variants={itemVariants}
+            style={{
+              fontFamily: 'var(--font-accent, "Montserrat", system-ui, sans-serif)',
+              fontSize: '0.85rem',
+              fontWeight: 600,
+              textTransform: 'uppercase',
+              letterSpacing: '0.2em',
+              color: 'var(--color-primary, #FF4600)',
+              marginBottom: '1.5rem'
+            }}
+          >
+            Digital Creative Studio
+          </motion.div>
+          
+          <motion.h1 
+            variants={itemVariants}
+            style={{
+              fontFamily: 'var(--font-heading, "Space Grotesk", system-ui, sans-serif)',
+              fontWeight: 800,
+              fontSize: 'clamp(3rem, 8vw, 7rem)',
+              lineHeight: 1.05,
+              textTransform: 'uppercase',
+              color: '#FFFFFF',
+              margin: '0 0 1.5rem 0',
+              whiteSpace: 'pre-line'
+            }}
+          >
+            {`WE BUILD\nDIGITAL\nPRESENCE`}
+          </motion.h1>
 
-      {/* ── MASSIVE BOTTOM NAME ── */}
-      <motion.div
-        initial={{ opacity: 0, y: 40 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
+          <motion.p 
+            variants={itemVariants}
+            style={{
+              fontFamily: 'var(--font-body, "Inter", system-ui, sans-serif)',
+              fontSize: 'clamp(1rem, 1.5vw, 1.25rem)',
+              lineHeight: 1.6,
+              color: 'rgba(255,255,255,0.5)',
+              maxWidth: '500px',
+              margin: '0 0 2.5rem 0'
+            }}
+          >
+            From concept to execution — one studio, one vision, every pixel intentional.
+          </motion.p>
+
+          <motion.div variants={itemVariants}>
+            <motion.a 
+              href="#work"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                backgroundColor: 'var(--color-primary, #FF4600)',
+                color: '#FFFFFF',
+                padding: '14px 32px',
+                borderRadius: '100px',
+                fontFamily: 'var(--font-accent, "Montserrat", system-ui, sans-serif)',
+                fontSize: '0.75rem',
+                fontWeight: 600,
+                textTransform: 'uppercase',
+                letterSpacing: '0.05em',
+                textDecoration: 'none',
+                border: 'none',
+                cursor: 'pointer'
+              }}
+            >
+              View Our Work
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </motion.a>
+          </motion.div>
+        </motion.div>
+
+        {/* Desktop Interactive Decor */}
+        {!isMobile && (
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1, delay: 0.5, ease: 'easeOut' }}
+            style={{
+              position: 'absolute',
+              right: '5%',
+              top: '40%',
+              transform: 'translateY(-50%)',
+              width: '400px',
+              height: '500px',
+              pointerEvents: 'none',
+              zIndex: 1
+            }}
+          >
+            <svg width="400" height="500" viewBox="0 0 400 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <motion.rect 
+                animate={{ y: [0, -10, 0] }}
+                transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+                x="50" y="50" width="260" height="180" rx="var(--radius-tile, 20)" 
+                fill="var(--color-primary, #FF4600)" fillOpacity="0.15" 
+              />
+              <motion.rect 
+                animate={{ y: [0, 10, 0] }}
+                transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
+                x="150" y="160" width="220" height="200" rx="var(--radius-tile, 20)" 
+                fill="var(--color-primary, #FF4600)" fillOpacity="0.25" 
+              />
+              <motion.rect 
+                animate={{ x: [0, 10, 0] }}
+                transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
+                x="80" y="280" width="160" height="120" rx="var(--radius-tile, 20)" 
+                fill="var(--color-primary, #FF4600)" fillOpacity="0.4" 
+              />
+            </svg>
+          </motion.div>
+        )}
+      </div>
+
+      {/* 4. Bottom Watermark */}
+      <div 
         style={{
-          position: 'absolute',
-          bottom: '-0.5vh',
-          left: 0, right: 0,
-          textAlign: 'center',
-          zIndex: 30,
+          width: '100%',
+          overflow: 'hidden',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'flex-end',
+          lineHeight: 0.8,
           pointerEvents: 'none',
+          zIndex: 0
         }}
       >
-        <h1 style={{
-          fontSize: 'clamp(2rem, 10vw, 12rem)',
-          fontFamily: 'var(--font-heading)',
-          color: 'var(--color-accent)',
-          margin: 0,
-          lineHeight: 0.8,
-          letterSpacing: '-0.04em',
-          textTransform: 'none',
-          mixBlendMode: 'difference',
-        }}>
-          Sam Daramroei
-        </h1>
-      </motion.div>
+        <span 
+          style={{
+            fontFamily: 'var(--font-heading, "Space Grotesk", system-ui, sans-serif)',
+            fontWeight: 900,
+            fontSize: 'clamp(4rem, 15vw, 14rem)',
+            color: 'rgba(255,255,255,0.03)',
+            textTransform: 'uppercase',
+            letterSpacing: '-0.02em',
+            whiteSpace: 'nowrap'
+          }}
+        >
+          Cheerio
+        </span>
+      </div>
     </section>
   );
 }
