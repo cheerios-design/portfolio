@@ -1,30 +1,25 @@
-/* ─── Fonts ─────────────────────────────────────────────── */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Montserrat:wght@500;600;700&family=Space+Grotesk:wght@500;700;800&display=swap');
-
 @import "tailwindcss";
 
 /* ─── Design Tokens ──────────────────────────────────────── */
-:root {
-  --color-base: #1A1A1A;
-  --color-primary: #FF4600;
-  --color-accent: #F5F0EB;
-  --color-surface: #242424;
-  --color-surface-light: #F5F0EB;
-  --color-border: rgba(255, 255, 255, 0.08);
-  --color-border-light: rgba(26, 26, 26, 0.08);
-  --color-text-muted: rgba(255, 255, 255, 0.5);
-  --color-text-muted-dark: rgba(26, 26, 26, 0.5);
-  
-  --font-heading: 'Space Grotesk', system-ui, sans-serif;
-  --font-body: 'Inter', system-ui, sans-serif;
-  --font-accent: 'Montserrat', system-ui, sans-serif;
-  
-  --radius-tile: 20px;
-  --radius-tile-lg: 28px;
-  --radius-tile-sm: 12px;
+@theme {
+  --color-ink: #0c0d0a;
+  --color-ink-2: #151712;
+  --color-ink-3: #22251d;
+  --color-lime: #d4ff1f;
+  --color-lime-dim: #a8cc12;
+  --color-paper: #eff2e8;
+  --color-mute: #8d937f;
+
+  --ease-glyph: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-/* ─── Reset ──────────────────────────────────────────────── */
+@theme inline {
+  --font-sans: var(--font-inter), system-ui, sans-serif;
+  --font-display: var(--font-grotesk), system-ui, sans-serif;
+  --font-serif: var(--font-instrument), Georgia, serif;
+}
+
+/* ─── Base ───────────────────────────────────────────────── */
 *,
 *::before,
 *::after {
@@ -32,10 +27,31 @@
 }
 
 html {
-  scroll-behavior: smooth;
+  background: var(--color-ink);
 }
 
-/* ─── Lenis Scroll Momentum Reset ────────────────────────── */
+body {
+  background: var(--color-ink);
+  color: var(--color-paper);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  margin: 0;
+  min-height: 100vh;
+}
+
+::selection {
+  background: var(--color-lime);
+  color: var(--color-ink);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-lime);
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
+/* ─── Lenis ──────────────────────────────────────────────── */
 html.lenis,
 html.lenis body {
   height: auto;
@@ -49,204 +65,67 @@ html.lenis body {
 .lenis.lenis-stopped {
   overflow: hidden;
 }
-.lenis.lenis-smooth iframe {
-  pointer-events: none;
-}
-
-/* ─── Base Styles ────────────────────────────────────────── */
-body {
-  background-color: var(--color-base);
-  color: #ffffff;
-  font-family: var(--font-body);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  margin: 0;
-  padding: 0;
-  min-height: 100vh;
-}
-
-/* ─── Typography ─────────────────────────────────────────── */
-h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-heading);
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: -0.02em;
-  line-height: 1.1;
-  margin: 0;
-}
 
 /* ─── Scrollbar ──────────────────────────────────────────── */
 ::-webkit-scrollbar {
   width: 8px;
-  height: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--color-base);
+  background: var(--color-ink);
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--color-primary);
+  background: var(--color-lime);
   border-radius: 4px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: #ff5e22;
 }
 
 /* ─── Utilities ──────────────────────────────────────────── */
 
-/* Section Label Utility */
-.section-label {
-  font-family: var(--font-accent);
-  font-size: 0.875rem;
+/* Faint dot-matrix backdrop — echoes the glyph grid */
+.dot-grid {
+  background-image: radial-gradient(circle, rgb(239 242 232 / 0.07) 1.2px, transparent 1.6px);
+  background-size: 22px 22px;
+  background-position: center;
+}
+
+/* Small mono-ish uppercase label */
+.label {
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: var(--color-text-muted);
-}
-.section-label::before {
-  content: '//';
-  color: var(--color-primary);
-  font-weight: 700;
 }
 
-/* ─── Puzzle Tile Shapes ─────────────────────────────────────── */
-.tile-card {
-  border-radius: var(--radius-tile);
-  overflow: hidden;
+/* Serif annotation, as in "( What we do )" */
+.note {
+  font-family: var(--font-serif);
+  font-size: clamp(0.95rem, 1.2vw, 1.15rem);
+  line-height: 1.1;
 }
 
-.tile-card-lg {
-  border-radius: var(--radius-tile-lg);
-  overflow: hidden;
-}
-
-.tile-card-sm {
-  border-radius: var(--radius-tile-sm);
-  overflow: hidden;
-}
-
-/* Notched corner (creates the concave puzzle-piece cutout) */
-.tile-notch {
-  position: relative;
-}
-
-.tile-notch::before {
-  content: '';
-  position: absolute;
-  width: 24px;
-  height: 24px;
-  background: var(--color-base);
-  border-radius: 50%;
-}
-
-.tile-notch-tl::before {
-  top: -12px;
-  left: -12px;
-}
-
-.tile-notch-tr::before {
-  top: -12px;
-  right: -12px;
-}
-
-.tile-notch-bl::before {
-  bottom: -12px;
-  left: -12px;
-}
-
-.tile-notch-br::before {
-  bottom: -12px;
-  right: -12px;
-}
-
-/* Light Section Utility */
-.section-light {
-  background: var(--color-surface-light);
-  color: var(--color-base);
-}
-
-.section-light h1,
-.section-light h2,
-.section-light h3,
-.section-light h4,
-.section-light h5,
-.section-light h6 {
-  color: var(--color-base);
-}
-
-/* Smooth Transition */
-.transition-smooth {
-  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-}
-
-/* ─── Links & Hovers ─────────────────────────────────────── */
-.project-title-link:hover {
-  color: #FF4600;
-}
-
-.social-link:hover {
-  color: #FF4600;
-}
-
-.desktop-nav-link:hover {
-  color: var(--color-primary);
-}
-
-/* Row Divider */
-.row-divider {
-  border-top: 1px solid var(--color-border);
-  width: 100%;
-}
-.section-light .row-divider {
-  border-top: 1px solid var(--color-border-light);
-}
-
-/* ─── Layout & Responsive Grids ──────────────────────────── */
-.section-pad {
-  padding: 4rem 1.5rem;
-}
-.footer-pad {
-  padding: 4rem 1.5rem 2rem;
-}
-.grid-2-col {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 2rem;
-}
-.grid-project {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 2rem;
-}
-
-@media (min-width: 768px) {
-  .section-pad {
-    padding: 6rem 2.5rem;
+/* Hide the native cursor when the glyph cursor is active */
+@media (pointer: fine) {
+  html.has-glyph-cursor,
+  html.has-glyph-cursor * {
+    cursor: none !important;
   }
-  .footer-pad {
-    padding: 6rem 2.5rem 3rem;
-  }
-  .grid-2-col {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  .grid-project {
-    grid-template-columns: 1fr 2fr;
+  html.has-glyph-cursor :is(input, textarea, select) {
+    cursor: text !important;
   }
 }
 
-.hide-on-mobile {
-  display: none;
+/* Endless marquee */
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
 }
-.show-on-mobile {
-  display: block;
+.marquee-track {
+  animation: marquee var(--marquee-duration, 40s) linear infinite;
 }
 
-@media (min-width: 768px) {
-  .hide-on-mobile {
-    display: block;
-  }
-  .show-on-mobile {
-    display: none;
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none;
   }
 }

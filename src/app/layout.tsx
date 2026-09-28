@@ -1,6 +1,18 @@
 import type { Metadata } from 'next';
+import { Inter, Space_Grotesk, Instrument_Serif } from 'next/font/google';
 import './globals.css';
 import SmoothScroll from '@/components/SmoothScroll';
+import GlyphCursor from '@/components/chrome/GlyphCursor';
+import Menu from '@/components/chrome/Menu';
+
+const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
+const grotesk = Space_Grotesk({ subsets: ['latin'], variable: '--font-grotesk' });
+const instrument = Instrument_Serif({
+  subsets: ['latin'],
+  weight: '400',
+  style: ['normal', 'italic'],
+  variable: '--font-instrument',
+});
 
 export const metadata: Metadata = {
   title: 'Cheerio Studios — Digital Creative Studio',
@@ -44,9 +56,9 @@ export const metadata: Metadata = {
     ],
   },
   other: {
-    'msapplication-TileColor': '#1A1A1A',
+    'msapplication-TileColor': '#0C0D0A',
     'msapplication-TileImage': '/favicons/ms-icon-144x144.png',
-    'theme-color': '#1A1A1A',
+    'theme-color': '#0C0D0A',
   },
 };
 
@@ -56,17 +68,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap"
-          rel="stylesheet"
-        />
-      </head>
-      <body style={{ background: '#1A1A1A' }}>
-        <SmoothScroll>{children}</SmoothScroll>
+    <html lang="en" className={`${inter.variable} ${grotesk.variable} ${instrument.variable}`}>
+      <body>
+        <SmoothScroll>
+          {children}
+          <Menu />
+          <GlyphCursor />
+        </SmoothScroll>
       </body>
     </html>
   );

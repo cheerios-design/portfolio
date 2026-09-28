@@ -1,17 +1,25 @@
-import Hero from '@/components/Hero';
-import About from '@/components/About';
-import ProjectsGrid from '@/components/ProjectsGrid';
-import Contact from '@/components/Contact';
-import Footer from '@/components/Footer';
+import IndexSection from '@/components/sections/IndexSection';
+import Hero from '@/components/sections/Hero';
+import Marquee from '@/components/sections/Marquee';
+import Services from '@/components/sections/Services';
+import About from '@/components/sections/About';
+import Work from '@/components/sections/Work';
+import Contact from '@/components/sections/Contact';
+import Footer from '@/components/sections/Footer';
 
 export default function Home() {
   return (
-    <main>
-      <Hero />
-      <About />
-      <ProjectsGrid />
-      <Contact />
+    <>
+      <main>
+        <IndexSection />
+        <Hero />
+        <Marquee />
+        <Services />
+        <About />
+        <Work />
+        <Contact />
+      </main>
       <Footer />
-    </main>
+    </>
   );
 }
