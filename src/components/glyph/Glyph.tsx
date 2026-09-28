@@ -120,7 +120,7 @@ export default function Glyph({
               style={{ transformBox: 'fill-box', transformOrigin: 'center' }}
               fill="currentColor"
               stroke="currentColor"
-              strokeWidth={0.03}
+              strokeWidth={0.06}
             />
             <motion.path
               initial={reduceMotion ? false : { d: cell.fillet, opacity: 0 }}
@@ -128,7 +128,7 @@ export default function Glyph({
               transition={{ duration: reduceMotion ? 0 : 0.35, ease: EASE, delay: reduceMotion ? 0 : d + 0.15 }}
               fill="currentColor"
               stroke="currentColor"
-              strokeWidth={0.03}
+              strokeWidth={0.06}
             />
           </React.Fragment>
         );

@@ -92,8 +92,7 @@ export default function IndexNav({ onNavigate, delay = 0 }: IndexNavProps) {
               <a
                 href={item.href}
                 aria-label={`${item.word.toLowerCase()} — ${item.note}`}
-                className="block min-w-0 transition-colors duration-300"
-                style={{ color: isHovered ? 'var(--color-lime)' : 'var(--color-paper)' }}
+                className="block min-w-0 text-paper"
                 onPointerEnter={() => setHovered(i)}
                 onPointerLeave={() => setHovered(null)}
                 onFocus={() => setHovered(i)}

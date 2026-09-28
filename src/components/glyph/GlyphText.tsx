@@ -1,35 +1,38 @@
 'use client';
 
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { motion, useInView, useReducedMotion, type Variants } from 'framer-motion';
 import { buildCells, hash, type Cell } from '@/lib/glyph/geometry';
 import { ASCENT, CAP, glyphFor } from '@/lib/glyph/font';
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 const SPREAD = 0.7; // seconds the build-in sweeps across a line
+const SEAM = 0.07; // stroke that overlaps neighbouring cells so no hairline gaps show
 
 type Piece = Cell & { kind: 'body' | 'fillet'; delay: number; hoverDelay: number };
-type Ctx = { p: Piece; entered: boolean; reduce: boolean };
+type Ctx = { p: Piece; reduce: boolean };
 
-const variants: Variants = {
+// Cells build in once; after that they stay fused (hover never breaks the letters apart)
+const cellVariants: Variants = {
   hidden: { opacity: 0, scale: 0 },
-  fused: ({ p, entered, reduce }: Ctx) =>
+  shown: ({ p, reduce }: Ctx) =>
     p.kind === 'body'
-      ? {
-          opacity: 1,
-          scale: 1,
-          d: p.body,
-          transition: reduce ? { duration: 0 } : { duration: 0.55, ease: EASE, delay: entered ? p.hoverDelay : p.delay },
-        }
-      : {
-          opacity: 1,
-          transition: reduce ? { duration: 0 } : { duration: 0.3, delay: (entered ? p.hoverDelay : p.delay) + 0.2 },
-        },
-  // Hover state: letters dissolve back into their dot-matrix grid
-  dots: ({ p }: Ctx) =>
-    p.kind === 'body'
-      ? { opacity: 1, scale: 0.8, d: p.dot, transition: { duration: 0.35, ease: EASE, delay: p.hoverDelay } }
-      : { opacity: 0, transition: { duration: 0.15 } },
+      ? { opacity: 1, scale: 1, transition: reduce ? { duration: 0 } : { duration: 0.55, ease: EASE, delay: p.delay } }
+      : { opacity: 1, transition: reduce ? { duration: 0 } : { duration: 0.3, delay: p.delay + 0.2 } },
+  hover: { opacity: 1, scale: 1 },
+};
+
+// Hover: each whole letter lifts in a left-to-right wave
+const letterVariants: Variants = {
+  hidden: { y: 0 },
+  shown: ({ i, reduce }: { i: number; reduce: boolean }) => ({
+    y: 0,
+    transition: reduce ? { duration: 0 } : { type: 'spring', stiffness: 380, damping: 20, delay: i * 0.03 },
+  }),
+  hover: ({ i, reduce }: { i: number; reduce: boolean }) => ({
+    y: reduce ? 0 : -0.45,
+    transition: { type: 'spring', stiffness: 380, damping: 14, delay: i * 0.035 },
+  }),
 };
 
 function layout(text: string, radius: number, align: 'left' | 'center' | 'right', tracking: number, leading: number) {
@@ -41,7 +44,7 @@ function layout(text: string, radius: number, align: 'left' | 'center' | 'right'
   });
 
   const width = Math.max(...lines.map((l) => l.width));
-  const pieces: Piece[] = [];
+  const letters: Piece[][] = [];
   let y = 0;
 
   lines.forEach((line, li) => {
@@ -49,21 +52,23 @@ function layout(text: string, radius: number, align: 'left' | 'center' | 'right'
     let x = align === 'left' ? 0 : align === 'center' ? (width - line.width) / 2 : width - line.width;
 
     for (const g of line.glyphs) {
+      const pieces: Piece[] = [];
       for (const c of buildCells(g, radius, x, capTop - (g.length - CAP))) {
         if (!c.filled && !c.hasFillet) continue;
         pieces.push({
           ...c,
           kind: c.filled ? 'body' : 'fillet',
           delay: (c.x / width) * SPREAD + hash(c.x, c.y) * 0.25 + li * 0.12,
-          hoverDelay: (c.x / width) * 0.25 + hash(c.y, c.x) * 0.05,
+          hoverDelay: (c.x / width) * 0.3 + hash(c.y, c.x) * 0.06,
         });
       }
+      if (pieces.length) letters.push(pieces);
       x += g[0].length + tracking;
     }
     y = capTop + CAP + leading;
   });
 
-  return { pieces, width, height: y - leading };
+  return { letters, width, height: y - leading };
 }
 
 interface GlyphTextProps {
@@ -74,8 +79,10 @@ interface GlyphTextProps {
   /** "height": size by cap height; "width": stretch to the container's width */
   fit?: 'height' | 'width';
   align?: 'left' | 'center' | 'right';
-  /** Dissolve into dots when hovered */
+  /** Colour sweep + letter wave when hovered */
   interactive?: boolean;
+  /** Colour the letters sweep to on hover ("currentColor" = wave only) */
+  hoverColor?: string;
   /** Controlled hover state (e.g. when the whole row is hovered) */
   hovered?: boolean;
   delay?: number;
@@ -95,6 +102,7 @@ export default function GlyphText({
   fit = 'height',
   align = 'left',
   interactive = false,
+  hoverColor = 'var(--color-lime)',
   hovered,
   delay = 0,
   radius = 0.5,
@@ -107,32 +115,28 @@ export default function GlyphText({
   const ref = useRef<SVGSVGElement>(null);
   const reduce = !!useReducedMotion();
   const inView = useInView(ref, { once: true, margin: '-6% 0px' });
-  const [entered, setEntered] = useState(false);
   const [selfHover, setSelfHover] = useState(false);
 
-  const { pieces, width, height } = useMemo(
+  const { letters, width, height } = useMemo(
     () => layout(text, radius, align, tracking, leading),
     [text, radius, align, tracking, leading]
   );
 
-  useEffect(() => {
-    if (!inView || entered) return;
-    const t = setTimeout(() => setEntered(true), (delay + SPREAD + 1) * 1000);
-    return () => clearTimeout(t);
-  }, [inView, entered, delay]);
-
   const isHovered = hovered ?? (interactive && selfHover);
-  const state = !inView && !reduce ? 'hidden' : isHovered ? 'dots' : 'fused';
+  const state = !inView && !reduce ? 'hidden' : isHovered ? 'hover' : 'shown';
   // `size` is the cap height of ONE line, so multi-line text scales per line, not per block
   const capsWide = (width + 0.1) / CAP;
 
   return (
-    <Tag className={`block min-w-0 ${className}`} style={style}>
+    // The hover colour lives on the plain wrapper: CSS variables on motion.svg don't reach the DOM
+    <Tag className={`block min-w-0 ${className}`} style={{ ...style, ['--glyph-hover' as string]: hoverColor }}>
       {!decorative && <span className="sr-only">{text}</span>}
       <motion.svg
         ref={ref}
         viewBox={`-0.05 -0.05 ${width + 0.1} ${height + 0.1}`}
         aria-hidden="true"
+        className="glyph-text"
+        data-hover={isHovered || undefined}
         initial={reduce ? false : 'hidden'}
         animate={state}
         onHoverStart={interactive ? () => setSelfHover(true) : undefined}
@@ -148,17 +152,25 @@ export default function GlyphText({
           marginRight: align === 'center' ? 'auto' : undefined,
         }}
       >
-        {pieces.map((p, i) => (
-          <motion.path
-            key={i}
-            custom={{ p: { ...p, delay: p.delay + delay }, entered, reduce }}
-            variants={variants}
-            d={p.kind === 'body' ? p.body : p.fillet}
-            fill="currentColor"
-            stroke="currentColor"
-            strokeWidth={0.03}
-            style={p.kind === 'body' ? { transformBox: 'fill-box', transformOrigin: 'center' } : undefined}
-          />
+        {letters.map((pieces, li) => (
+          <motion.g key={li} custom={{ i: li, reduce }} variants={letterVariants}>
+            {pieces.map((p, i) => (
+              <motion.path
+                key={i}
+                className="glyph-cell"
+                custom={{ p: { ...p, delay: p.delay + delay }, reduce }}
+                variants={cellVariants}
+                d={p.kind === 'body' ? p.body : p.fillet}
+                fill="currentColor"
+                stroke="currentColor"
+                strokeWidth={SEAM}
+                style={{
+                  transitionDelay: `${p.hoverDelay}s`,
+                  ...(p.kind === 'body' ? { transformBox: 'fill-box', transformOrigin: 'center' } : {}),
+                }}
+              />
+            ))}
+          </motion.g>
         ))}
       </motion.svg>
     </Tag>

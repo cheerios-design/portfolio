@@ -67,7 +67,7 @@ export default function Contact() {
         </div>
 
         <div className="mb-16 flex items-end justify-between gap-6 sm:mb-24">
-          <GlyphText as="h2" text={"LET'S\nTALK"} size="min(12vw, 9rem)" interactive />
+          <GlyphText as="h2" text={"LET'S\nTALK"} size="min(12vw, 9rem)" interactive hoverColor="currentColor" />
           <motion.div
             className="hidden md:block"
             initial={{ rotate: -90, scale: 0.5, opacity: 0 }}

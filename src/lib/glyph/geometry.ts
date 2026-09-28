@@ -10,7 +10,7 @@ export type Cell = {
   filled: boolean;
   /** Fused outline of the cell (or a fully rounded cell when empty) */
   body: string;
-  /** Same cell as a free-standing dot — used for the "dissolve" hover state */
+  /** Same cell as a free-standing dot (fully rounded) */
   dot: string;
   /** Concave fillets living in this (empty) cell's corners */
   fillet: string;

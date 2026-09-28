@@ -31,7 +31,14 @@ export default function SectionHeader({ index, title, note, count, size = 'min(1
         <span className={`label ${accent}`}>( {index} ) — {note}</span>
         {count && <span className={`note ${muted}`}>( {count} )</span>}
       </motion.div>
-      <GlyphText as="h2" text={title} size={size} interactive className={tone === 'dark' ? 'text-paper' : 'text-ink'} />
+      <GlyphText
+        as="h2"
+        text={title}
+        size={size}
+        interactive
+        hoverColor={tone === 'dark' ? 'var(--color-lime)' : 'currentColor'}
+        className={tone === 'dark' ? 'text-paper' : 'text-ink'}
+      />
     </div>
   );
 }

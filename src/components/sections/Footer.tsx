@@ -59,7 +59,7 @@ export default function Footer() {
         </div>
 
         <motion.div
-          className="py-10 text-paper transition-colors duration-500 hover:text-lime"
+          className="py-10 text-paper"
           initial={{ y: 60 }}
           whileInView={{ y: 0 }}
           viewport={{ once: true }}

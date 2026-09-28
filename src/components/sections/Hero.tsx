@@ -54,7 +54,7 @@ export default function Hero() {
           <GlyphText text="DIGITAL" size={CAP} decorative interactive delay={0.15} />
         </motion.span>
         <motion.span style={{ x: x3 }} className="text-lime">
-          <GlyphText text="PRESENCE" size={CAP} decorative interactive delay={0.3} />
+          <GlyphText text="PRESENCE" size={CAP} decorative interactive delay={0.3} hoverColor="var(--color-paper)" />
         </motion.span>
       </h1>
 

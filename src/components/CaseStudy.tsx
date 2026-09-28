@@ -40,7 +40,7 @@ export default function CaseStudy({ slug }: { slug: string }) {
             </div>
 
             <div className="mb-10 flex flex-wrap items-end justify-between gap-6">
-              <GlyphText text={project.num} size="clamp(4rem, 12vw, 10rem)" className="text-lime" decorative interactive />
+              <GlyphText text={project.num} size="clamp(4rem, 12vw, 10rem)" className="text-lime" hoverColor="var(--color-paper)" decorative interactive />
               <motion.span
                 className="grid h-24 w-24 place-items-center rounded-tile bg-lime text-ink sm:h-32 sm:w-32"
                 initial={{ scale: 0, rotate: -30 }}
@@ -120,7 +120,7 @@ export default function CaseStudy({ slug }: { slug: string }) {
                 transition={{ duration: 0.8, ease: EASE }}
               >
                 <div className="mb-8 flex items-center gap-6">
-                  <GlyphText text={`0${i + 1}`} size="clamp(2.4rem, 4vw, 3.4rem)" className="text-lime" decorative interactive />
+                  <GlyphText text={`0${i + 1}`} size="clamp(2.4rem, 4vw, 3.4rem)" className="text-lime" hoverColor="var(--color-paper)" decorative interactive />
                   <h2 className="font-display text-[clamp(1.6rem,3vw,2.6rem)] font-bold uppercase tracking-tight">{s.heading}</h2>
                 </div>
                 <p className="max-w-3xl text-lg leading-[1.8] text-paper/75">{s.body}</p>
@@ -143,7 +143,7 @@ export default function CaseStudy({ slug }: { slug: string }) {
               Next project
               <span className="note font-normal">( {next.num} / 0{PROJECTS.length} )</span>
             </span>
-            <GlyphText text={next.glyphTitle} fit="width" hovered={nextHover} />
+            <GlyphText text={next.glyphTitle} fit="width" hovered={nextHover} hoverColor="currentColor" />
           </div>
         </Link>
       </main>

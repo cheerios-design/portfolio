@@ -9,6 +9,7 @@
   --color-lime-dim: #a8cc12;
   --color-paper: #eff2e8;
   --color-mute: #8d937f;
+  --color-ghost: #393b36; /* paper at 20% over ink, but opaque */
 
   --radius-tile: 28px;
   --radius-chip: 20px;
@@ -121,6 +122,17 @@ html.lenis body {
   html.has-glyph-cursor :is(input, textarea, select) {
     cursor: text !important;
   }
+}
+
+/* Glyph type hover: colour sweeps through the cells (per-cell delay set inline) */
+.glyph-text .glyph-cell {
+  transition-property: fill, stroke;
+  transition-duration: 0.35s;
+  transition-timing-function: ease;
+}
+.glyph-text[data-hover] .glyph-cell {
+  fill: var(--glyph-hover);
+  stroke: var(--glyph-hover);
 }
 
 /* Endless marquee */
