@@ -20,7 +20,7 @@ const ITEMS: Item[] = [
 ];
 
 // Cap height of each index word — fits six rows in one viewport on any screen
-const CAP = 'min(9.5svh, 8.6vw)';
+const CAP = 'min(8.2svh, 8.6vw)';
 
 interface IndexNavProps {
   /** Called before navigating (e.g. to close the menu overlay) */

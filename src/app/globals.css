@@ -30,6 +30,12 @@ html {
   background: var(--color-ink);
 }
 
+/* Tilted marquee and parallax pieces must never cause sideways scrolling */
+html,
+body {
+  overflow-x: clip;
+}
+
 body {
   background: var(--color-ink);
   color: var(--color-paper);
