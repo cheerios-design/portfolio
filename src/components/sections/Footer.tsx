@@ -51,7 +51,7 @@ export default function Footer() {
               onPointerEnter={() => setTopHover(true)}
               onPointerLeave={() => setTopHover(false)}
               aria-label="Back to top"
-              className="grid h-24 w-24 place-items-center rounded-[30px] bg-lime text-ink"
+              className="grid h-24 w-24 place-items-center rounded-tile bg-lime text-ink"
             >
               <Glyph shapes={['arrowUp', 'sparkle']} active={topHover ? 1 : 0} size={40} />
             </button>

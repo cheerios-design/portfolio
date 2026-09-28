@@ -123,10 +123,11 @@ export default function GlyphText({
 
   const isHovered = hovered ?? (interactive && selfHover);
   const state = !inView && !reduce ? 'hidden' : isHovered ? 'dots' : 'fused';
-  const ratio = width / height;
+  // `size` is the cap height of ONE line, so multi-line text scales per line, not per block
+  const capsWide = (width + 0.1) / CAP;
 
   return (
-    <Tag className={`block ${className}`} style={style}>
+    <Tag className={`block min-w-0 ${className}`} style={style}>
       {!decorative && <span className="sr-only">{text}</span>}
       <motion.svg
         ref={ref}
@@ -141,7 +142,7 @@ export default function GlyphText({
           overflow: 'visible',
           aspectRatio: `${width + 0.1} / ${height + 0.1}`,
           height: 'auto',
-          width: fit === 'width' ? '100%' : `calc(${size} * ${ratio.toFixed(4)})`,
+          width: fit === 'width' ? '100%' : `calc(${size} * ${capsWide.toFixed(4)})`,
           maxWidth: '100%',
           marginLeft: align === 'left' ? undefined : 'auto',
           marginRight: align === 'center' ? 'auto' : undefined,

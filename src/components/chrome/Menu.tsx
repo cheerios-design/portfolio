@@ -63,7 +63,7 @@ export default function Menu() {
                 aria-controls="index-overlay"
                 aria-label={open ? 'Close index' : 'Open index'}
                 onClick={() => setOpen((o) => !o)}
-                className="group grid h-14 w-14 place-items-center rounded-[18px] border border-lime/30 bg-ink text-lime transition-colors duration-300 hover:border-lime hover:bg-lime hover:text-ink"
+                className="group grid h-14 w-14 place-items-center rounded-chip border border-lime/30 bg-ink text-lime transition-colors duration-300 hover:border-lime hover:bg-lime hover:text-ink"
               >
                 <Glyph shapes={['menu', 'close']} active={open ? 1 : 0} size={24} radius={0.5} />
               </button>

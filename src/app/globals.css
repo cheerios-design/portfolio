@@ -10,6 +10,9 @@
   --color-paper: #eff2e8;
   --color-mute: #8d937f;
 
+  --radius-tile: 28px;
+  --radius-chip: 20px;
+
   --ease-glyph: cubic-bezier(0.22, 1, 0.36, 1);
 }
 

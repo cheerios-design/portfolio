@@ -36,7 +36,7 @@ function ValueTile({ value, index }: { value: (typeof VALUES)[number]; index: nu
   const [hovered, setHovered] = useState(false);
   return (
     <motion.div
-      className="group relative flex flex-col gap-10 rounded-[28px] border border-ink-3 bg-ink-2 p-7 transition-colors duration-300 hover:border-lime/60"
+      className="group relative flex flex-col gap-10 rounded-tile border border-ink-3 bg-ink-2 p-7 transition-colors duration-300 hover:border-lime/60"
       initial={{ opacity: 0, y: 40, rotate: index % 2 ? 2 : -2 }}
       whileInView={{ opacity: 1, y: 0, rotate: 0 }}
       whileHover={{ y: -8 }}
@@ -46,7 +46,7 @@ function ValueTile({ value, index }: { value: (typeof VALUES)[number]; index: nu
       onHoverEnd={() => setHovered(false)}
     >
       <div className="flex items-start justify-between">
-        <span className="grid h-16 w-16 place-items-center rounded-[20px] bg-lime text-ink">
+        <span className="grid h-16 w-16 place-items-center rounded-chip bg-lime text-ink">
           <Glyph shapes={value.icons} active={hovered ? 1 : 0} size={34} delay={0.2 + index * 0.1} />
         </span>
         <span className="label text-mute">0{index + 1}</span>
@@ -69,21 +69,22 @@ export default function About() {
     <section id="about" className="relative bg-ink">
       {/* Sticky manifesto — words light up as you scroll */}
       <div ref={ref} className="relative h-[240vh]">
-        <div className="sticky top-0 flex h-svh flex-col justify-center overflow-hidden px-5 sm:px-8">
-          <motion.div
-            className="pointer-events-none absolute -right-[10vw] top-1/2 -translate-y-1/2 text-ink-3"
-            style={{ rotate: glyphRotate }}
-          >
-            <Glyph shapes={['flower', 'sparkle', 'diamond']} size="min(70vw, 80svh)" interval={4000} />
-          </motion.div>
+        <div className="sticky top-0 flex h-svh flex-col justify-center px-5 sm:px-8">
+          {/* Only the oversized background glyph is clipped — never the text */}
+          <div className="pointer-events-none absolute inset-0 overflow-hidden">
+            <motion.div
+              className="absolute -right-[10vw] top-1/2 -translate-y-1/2 text-ink-3"
+              style={{ rotate: glyphRotate }}
+            >
+              <Glyph shapes={['flower', 'sparkle', 'diamond']} size="min(70vw, 80svh)" interval={4000} />
+            </motion.div>
+          </div>
 
           <div className="relative mx-auto w-full max-w-[1440px]">
-            <div className="mb-10 flex items-center gap-5">
-              <GlyphText text="ABOUT" size="clamp(1.6rem, 3vw, 2.6rem)" className="text-lime" decorative />
-              <span className="label text-mute">( 03 ) — Who we are</span>
-            </div>
-            <h2 className="sr-only">About Cheerio Studios</h2>
-            <p className="max-w-[20ch] font-display text-[clamp(2.2rem,6vw,6rem)] font-bold uppercase leading-[0.98] tracking-tight sm:max-w-[22ch]">
+            {/* Same pattern as SectionHeader, compact so the manifesto fits the pinned screen */}
+            <span className="label mb-4 block text-lime">( 04 ) — Who we are</span>
+            <GlyphText as="h2" text="ABOUT" size="clamp(2rem, 4vw, 3.4rem)" interactive className="mb-10 text-paper" />
+            <p className="max-w-[20ch] font-display text-[clamp(1.7rem,min(5.4vw,6.2svh),5.5rem)] font-bold uppercase leading-[1.02] tracking-tight sm:max-w-[26ch]">
               {words.map((w, i) => {
                 const start = (i / words.length) * 0.85;
                 return <Word key={i} word={w} progress={scrollYProgress} range={[start, start + 0.12]} />;

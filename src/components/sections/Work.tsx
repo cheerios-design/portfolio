@@ -30,7 +30,7 @@ export default function Work() {
   return (
     <section id="work" className="relative bg-ink px-5 py-28 sm:px-8 sm:py-36">
       <div className="mx-auto max-w-[1440px]">
-        <SectionHeader index="04" note="Selected projects" title="WORK" count="03" size="min(24vw, 15rem)" />
+        <SectionHeader index="03" note="Selected projects" title="WORK" count="03" size="min(24vw, 15rem)" />
 
         <ul ref={listRef} className="relative" onPointerMove={onMove} onPointerLeave={() => setActive(null)}>
           {/* Preview tile that trails the cursor */}
@@ -46,7 +46,7 @@ export default function Work() {
                 transition={{ duration: 0.35, ease: EASE }}
               >
                 <div
-                  className="flex h-64 w-56 flex-col justify-between rounded-[32px] bg-lime p-5 text-ink"
+                  className="flex h-64 w-56 flex-col justify-between rounded-tile bg-lime p-5 text-ink"
                   style={{ translate: '-50% -55%', rotate: '-6deg' }}
                 >
                   <span className="label font-bold">{project.num} / 03</span>
@@ -73,7 +73,6 @@ export default function Work() {
               >
                 <Link
                   href={`/pages/${p.slug}`}
-                  data-cursor="View"
                   onPointerEnter={() => setActive(i)}
                   onFocus={() => setActive(i)}
                   onBlur={() => setActive(null)}

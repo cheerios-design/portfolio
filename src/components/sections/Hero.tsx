@@ -23,7 +23,6 @@ export default function Hero() {
   const x3 = useTransform(p, [0, 1], ['0%', '-8%']);
   const rotate = useTransform(p, [0, 1], [0, 90]);
   const scale = useTransform(p, [0, 1], [1, 0.6]);
-  const fade = useTransform(p, [0, 0.7], [1, 0]);
 
   return (
     <section id="hero" ref={ref} className="relative flex min-h-svh flex-col overflow-hidden bg-ink px-5 pb-8 pt-24 sm:px-8">
@@ -59,10 +58,7 @@ export default function Hero() {
         </motion.span>
       </h1>
 
-      <motion.div
-        style={{ opacity: fade }}
-        className="relative z-10 mt-12 flex flex-col gap-8 sm:flex-row sm:items-end sm:justify-between"
-      >
+      <div className="relative z-10 mt-12 flex flex-col items-start gap-8 sm:flex-row sm:items-end sm:justify-between">
         <motion.p
           className="max-w-md text-lg leading-relaxed text-mute"
           initial={{ opacity: 0, y: 20 }}
@@ -91,7 +87,7 @@ export default function Hero() {
             </span>
           </Link>
         </Magnetic>
-      </motion.div>
+      </div>
     </section>
   );
 }

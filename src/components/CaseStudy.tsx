@@ -42,7 +42,7 @@ export default function CaseStudy({ slug }: { slug: string }) {
             <div className="mb-10 flex flex-wrap items-end justify-between gap-6">
               <GlyphText text={project.num} size="clamp(4rem, 12vw, 10rem)" className="text-lime" decorative interactive />
               <motion.span
-                className="grid h-24 w-24 place-items-center rounded-[30px] bg-lime text-ink sm:h-32 sm:w-32"
+                className="grid h-24 w-24 place-items-center rounded-tile bg-lime text-ink sm:h-32 sm:w-32"
                 initial={{ scale: 0, rotate: -30 }}
                 animate={{ scale: 1, rotate: 0 }}
                 transition={{ type: 'spring', stiffness: 140, damping: 14, delay: 0.3 }}
@@ -134,7 +134,6 @@ export default function CaseStudy({ slug }: { slug: string }) {
         {/* Next project */}
         <Link
           href={`/pages/${next.slug}`}
-          data-cursor="Next"
           onPointerEnter={() => setNextHover(true)}
           onPointerLeave={() => setNextHover(false)}
           className="block bg-lime px-5 py-20 text-ink sm:px-8"

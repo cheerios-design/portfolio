@@ -21,6 +21,7 @@ const ITEMS: Item[] = [
 
 // Cap height of each index word — fits six rows in one viewport on any screen
 const CAP = 'min(8.2svh, 8.6vw)';
+const NOTE_WIDTH = 'clamp(5.5rem, 11vw, 9rem)';
 
 interface IndexNavProps {
   /** Called before navigating (e.g. to close the menu overlay) */
@@ -39,8 +40,8 @@ export default function IndexNav({ onNavigate, delay = 0 }: IndexNavProps) {
         const isDimmed = hovered !== null && !isHovered;
         const note = (
           <motion.span
-            className={`note hidden pt-1 sm:block ${item.side === 'left' ? 'text-right' : 'text-left'}`}
-            style={{ width: '9rem', color: isHovered ? 'var(--color-lime)' : 'var(--color-mute)' }}
+            className={`note hidden shrink-0 pt-1 md:block ${item.side === 'left' ? 'text-right' : 'text-left'}`}
+            style={{ width: NOTE_WIDTH, color: isHovered ? 'var(--color-lime)' : 'var(--color-mute)' }}
             initial={{ opacity: 0, x: item.side === 'left' ? -16 : 16 }}
             animate={{ opacity: 1, x: isHovered ? (item.side === 'left' ? -8 : 8) : 0 }}
             transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: hovered === null ? delay + 0.4 + i * 0.1 : 0 }}
@@ -48,14 +49,14 @@ export default function IndexNav({ onNavigate, delay = 0 }: IndexNavProps) {
             {item.note}
           </motion.span>
         );
-        const spacer = <span className="hidden sm:block" style={{ width: '9rem' }} />;
+        const spacer = <span className="hidden shrink-0 md:block" style={{ width: NOTE_WIDTH }} />;
 
         const content =
           'reel' in item ? (
             <span className="flex items-center" style={{ gap: `calc(${CAP} * 0.18)` }}>
-              <GlyphText text="*(" size={CAP} decorative delay={delay + i * 0.12} />
+              <GlyphText text="*(" size={CAP} decorative delay={delay + i * 0.12} className="shrink-0" />
               <motion.span
-                className="grid place-items-center bg-lime text-ink"
+                className="grid shrink-0 place-items-center bg-lime text-ink"
                 style={{ height: CAP, width: `calc(${CAP} * 1.25)`, borderRadius: `calc(${CAP} * 0.22)` }}
                 initial={{ scale: 0, rotate: -20 }}
                 animate={{ scale: 1, rotate: 0 }}
@@ -63,7 +64,7 @@ export default function IndexNav({ onNavigate, delay = 0 }: IndexNavProps) {
               >
                 <Glyph shapes={['smiley', 'sparkle', 'heart', 'flower', 'x']} size="62%" interval={1600} />
               </motion.span>
-              <GlyphText text=")" size={CAP} decorative delay={delay + i * 0.12} />
+              <GlyphText text=")" size={CAP} decorative delay={delay + i * 0.12} className="shrink-0" />
             </span>
           ) : (
             <GlyphText
@@ -78,7 +79,7 @@ export default function IndexNav({ onNavigate, delay = 0 }: IndexNavProps) {
         return (
           <motion.div
             key={i}
-            className="flex items-start justify-center gap-3 sm:gap-6"
+            className="flex max-w-full items-start justify-center gap-3 md:gap-6"
             animate={{ opacity: isDimmed ? 0.28 : 1 }}
             transition={{ duration: 0.3 }}
           >
@@ -91,8 +92,7 @@ export default function IndexNav({ onNavigate, delay = 0 }: IndexNavProps) {
               <a
                 href={item.href}
                 aria-label={`${item.word.toLowerCase()} — ${item.note}`}
-                data-cursor="Go"
-                className="block transition-colors duration-300"
+                className="block min-w-0 transition-colors duration-300"
                 style={{ color: isHovered ? 'var(--color-lime)' : 'var(--color-paper)' }}
                 onPointerEnter={() => setHovered(i)}
                 onPointerLeave={() => setHovered(null)}
